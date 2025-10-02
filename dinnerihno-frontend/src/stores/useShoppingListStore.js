@@ -1,20 +1,26 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useShoppingListStore = defineStore('shoppingList', {
-  state: () => ({
-    ingredients: []
-  }),
-  actions: {
-    generateFromRecipes(recipes) {
-      this.ingredients = []
+export const useShoppingListStore = defineStore('shoppingList', () => {
+  const ingredients = ref([])
 
-      recipes.forEach(recipe => {
-        recipe.ingredients.forEach(ingredient => {
-          this.ingredients.push(ingredient)
-        })
-      })
+  // const generateFromRecipes = (recipes) => {
+  //   ingredients.value = []
+  //   recipes.forEach(recipe => {
+  //     recipe.ingredients.forEach(ingredient => {
+  //       ingredients.value.push(ingredient)
+  //     })
+  //   })
+  // }
 
-      // valfritt: slå ihop dubbletter, summera mängder osv
-    }
+  const setShoppingList = (ingredientList) => {
+    ingredients.value = ingredientList
+  }
+
+  // ✅ Här måste du returnera allt du vill kunna använda i komponenterna
+  return {
+    ingredients,
+    //generateFromRecipes,
+    setShoppingList
   }
 })

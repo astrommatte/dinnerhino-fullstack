@@ -1,4 +1,4 @@
-package com.kma_backend.kma_backend.config;
+package com.astrom.dinnerihno.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Adminpanel</h2>
+    <h2 class="title-text">Adminpanel</h2>
     <div v-for="user in users" :key="user.id">
       <p>{{ user.username }} - {{ user.roles.join(', ') }}</p>
       <button @click="deleteUser(user.id)">Ta bort användare</button>

@@ -77,8 +77,5 @@ public class ShoppingListItemService {
         List<ShoppingListItem> items = shoppingListRepository.findByUserEmail(email);
         shoppingListRepository.deleteAll(items);
     }
-
-
-
 }
 

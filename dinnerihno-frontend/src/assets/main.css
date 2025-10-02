@@ -5,6 +5,11 @@
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  padding-top: 80px; /* För att undvika att innehållet hamnar under navbaren */
+}
+
+.title-text{
+  text-align: center;
 }
 
 a,

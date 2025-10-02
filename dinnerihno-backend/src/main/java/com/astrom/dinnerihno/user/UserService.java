@@ -1,6 +1,7 @@
 package com.astrom.dinnerihno.user;
 
 import com.astrom.dinnerihno.mapper.DtoMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ public class UserService {
     private String adminEmail;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     public UserDTO createUser(CreateUserDTO dto) {
         User user = new User();
         user.setFirstName(dto.getFirstName());

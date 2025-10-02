@@ -9,6 +9,7 @@ import com.astrom.dinnerihno.recipe.RecipeDTO;
 import com.astrom.dinnerihno.shoppinglistitem.ShoppingListItem;
 import com.astrom.dinnerihno.shoppinglistitem.ShoppingListItemCreateDTO;
 import com.astrom.dinnerihno.shoppinglistitem.ShoppingListItemDTO;
+import com.astrom.dinnerihno.user.CreateUserDTO;
 import com.astrom.dinnerihno.user.User;
 import com.astrom.dinnerihno.user.UserDTO;
 import com.astrom.dinnerihno.user.UserRole;
