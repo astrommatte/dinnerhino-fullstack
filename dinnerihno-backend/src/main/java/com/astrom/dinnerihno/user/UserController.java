@@ -1,5 +1,7 @@
 package com.astrom.dinnerihno.user;
 
+import com.astrom.dinnerihno.recipe.RecipeCreateDTO;
+import com.astrom.dinnerihno.recipe.RecipeDTO;
 import com.astrom.dinnerihno.setting.SettingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -47,6 +50,7 @@ public class UserController {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
+    //Endast admin
     @GetMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -62,4 +66,21 @@ public class UserController {
         userService.changePassword(id, dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }
+
+
+
+
+    @GetMapping("/my-page")
+    public ResponseEntity<UserDTO> getUser(Principal principal) {
+        return ResponseEntity.ok(userService.getUser(principal.getName()));
+    }
+
+    @PutMapping("/my-page/{id}")
+    public ResponseEntity<UserDTO> updatePersonalUser(@PathVariable Long id,
+                                                  @RequestBody CreateUserDTO dto,
+                                                  Principal principal) {
+        return ResponseEntity.ok(userService.updatePersonalUser(id, dto, principal.getName()));
+    }
+
+
 }

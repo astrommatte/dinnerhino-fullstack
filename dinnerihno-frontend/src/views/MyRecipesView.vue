@@ -1,6 +1,7 @@
 <template>
+  <h2 class="title-text">Mina Recept</h2>
   <div class="card">
-    <h2 class="title-text">Mina Recept</h2>
+    
 
     <!-- Knapp som visar / döljer formuläret -->
     <Button 
@@ -47,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import Button from 'primevue/button'
 
@@ -121,7 +122,7 @@ const onRecipeSaved = () => {
 
 <style scoped>
 .card {
-  max-width: 400px;
+  max-width: auto;
   margin: 2rem auto;
   padding: 2rem;
   border-radius: 8px;

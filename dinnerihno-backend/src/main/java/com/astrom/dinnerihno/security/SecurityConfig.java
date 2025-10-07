@@ -35,11 +35,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ping").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Tillåt preflight
-                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/settings/registration").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/my-page/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/users/create").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/settings/registration").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/recipes/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/shopping-list/add/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/shopping-list/*").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/recipes/**").authenticated()

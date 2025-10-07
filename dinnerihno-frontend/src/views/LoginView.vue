@@ -13,7 +13,6 @@
               :class="{ 'p-invalid': errors.email }"
             />
           </Field>
-          <ErrorMessage name="email" class="p-error" />
         </div>
 
         <div class="field" v-if="isRegistering">
@@ -25,7 +24,6 @@
               :class="{ 'p-invalid': errors.firstName }"
             />
           </Field>
-          <ErrorMessage name="firstName" class="p-error" />
         </div>
 
         <div class="field" v-if="isRegistering">
@@ -37,7 +35,6 @@
               :class="{ 'p-invalid': errors.lastName }"
             />
           </Field>
-          <ErrorMessage name="lastName" class="p-error" />
         </div>
 
         <div class="field">
@@ -57,11 +54,9 @@
                 v-bind="field"
                 toggleMask
                 placeholder="Lösenord"
-                :class="{ 'p-invalid': errors.password }"
               />
             </div>
           </Field>
-          <ErrorMessage name="password" class="p-error" />
         </div>
       </div>
         <div class="login-view-buttons">
@@ -79,7 +74,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
+import { Form, Field, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'

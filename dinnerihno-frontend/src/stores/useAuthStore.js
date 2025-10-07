@@ -12,8 +12,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => !!auth.value)
   const isAdmin = computed(() => user.value?.roles?.includes('ROLE_ADMIN'))
-  
 
+  const setUser = (userData) => {
+    user.value = userData
+  }
+  
   const setAuth = (authHeader, userData) => {
     auth.value = authHeader
     user.value = userData
@@ -61,7 +64,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     setAuth,
     logout,
-    login
+    login,
+    setUser,
   }
 })
 

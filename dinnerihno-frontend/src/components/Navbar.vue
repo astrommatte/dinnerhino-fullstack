@@ -11,6 +11,7 @@
       <!-- Vanlig meny för större skärmar -->
       <nav class="nav-desktop">
         <span v-if="authStore.user" class="pi pi-user"> Inloggad som: {{ authStore.user.firstName }}</span>
+        <RouterLink to="/mypage">Mina sidor</RouterLink>
         <RouterLink to="/recipes">Swipea Recept</RouterLink>
         <RouterLink to="/myrecipes">Mina Recept</RouterLink>
         <RouterLink to="/shoppinglist">Handlingslista</RouterLink>
@@ -23,6 +24,7 @@
     <Drawer v-model:visible="isMenuVisible" position="left" class="mobile-menu">
       <span v-if="authStore.user" class="pi pi-user"> Inloggad som: {{ authStore.user.firstName }}</span>
       <div class="mobile-links">
+        <RouterLink to="/mypage" @click="isMenuVisible = false">Mina sidor</RouterLink>
         <RouterLink to="/recipes" @click="isMenuVisible = false">Swipea Recept</RouterLink>
         <RouterLink to="/myrecipes" @click="isMenuVisible = false">Mina Recept</RouterLink>
         <RouterLink to="/shoppinglist" @click="isMenuVisible = false">Handlingslista</RouterLink>

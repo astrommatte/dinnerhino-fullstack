@@ -10,7 +10,9 @@
         {{ item.ingredientName }} – <em>{{ item.quantity }}</em>
       </li>
     </ul>
-    <Button @click="deleteShoppingList">Ta bort hela listan</Button>
+    <div class="delete-button">
+      <Button @click="deleteShoppingList">Ta bort hela listan</Button>
+    </div>
   </div>
 </template>
 
@@ -62,9 +64,16 @@ const toggleItem = (index) => {
 
 <style scoped>
 .shopping-list {
+  text-align: center;
   list-style: none;
   padding: 0;
   margin: 1rem 0;
+}
+
+.delete-button {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 .shopping-list li {
