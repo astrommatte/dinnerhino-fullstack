@@ -23,20 +23,27 @@
         </li>
       </ul>
       <div class="swipe-buttons">
-        <Button icon="pi pi-angle-left" @click="recipeStore.skipCurrentRecipe()" />
-        <Button icon="pi pi-angle-right" @click="recipeStore.likeCurrentRecipe()" />
+        <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe()" />
+        <Button icon="pi pi-thumbs-down" @click="recipeStore.skipCurrentRecipe()" />
       </div>
     </div>
-    <p>* Swipea vänster för att lägga till recept</p>
-    <p>* Swipea höger för att skippa recept</p>
-    <p>* Här inne kan du trycka på en ingrediens om du redan har det hemma. Då kommer den redan vara överstruken i handlingslistan</p>
+    <Popover v-if="infoModal"/>
+
+    <h4>Recept skapad av: {{ recipeOwnerEmail }}</h4>
   </div>
   
-
   <div class="reset-and-submit-buttons">
     <Button icon="pi pi-refresh" label="Avbryt" severity="warning" @click="reset" />
-    <Button icon="pi pi-angle-right" @click="openInfoModal()">Info</Button>
+    <Button icon="pi pi-question-circle" @click="openInfoModal()"/>
     <Button icon="pi pi-check" label="Klar" severity="success" @click="submit" />
+
+    <Dialog header="Instruktioner" v-model:visible="infoModal" modal closeOnEscape>
+      <ul>
+        <li>Swipea vänster för att lägga till</li>
+        <li>Swipea höger för att skippa</li>
+        <li>Klicka på en ingrediens om du redan har den hemma</li>
+      </ul>
+    </Dialog>
   </div>
 </template>
 
@@ -51,6 +58,7 @@ const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
+const recipeOwnerEmail = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByEmail)
 const infoModal = ref(false)
 
 const toggleAtHome = (ingredient) => {
@@ -61,6 +69,17 @@ let startX = 0
 
 const startSwipe = (e) => {
   startX = e.touches[0].clientX
+}
+
+const endSwipe = (e) => {
+  const endX = e.changedTouches[0].clientX
+  const diff = endX - startX
+
+  if (diff > 50) {
+    recipeStore.skipCurrentRecipe()
+  } else if (diff < -50) {
+    recipeStore.likeCurrentRecipe()
+  }
 }
 
 const moveSwipe = (e) => {
@@ -108,17 +127,6 @@ const submit = async () => {
   }
 }
 
-const endSwipe = (e) => {
-  const endX = e.changedTouches[0].clientX
-  const diff = endX - startX
-
-  if (diff > 50) {
-    recipeStore.skipCurrentRecipe()
-  } else if (diff < -50) {
-    recipeStore.likeCurrentRecipe()
-  }
-}
-
 const openInfoModal = (() => {
   console.log('Nu ska det öppnas en modal med INFO')
   infoModal.value = true
@@ -160,5 +168,11 @@ const closeInfoModal = (() => {
   display: flex;
   margin: auto;
   justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+  .swipe-buttons {
+    display: none;
+  }
 }
 </style>

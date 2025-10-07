@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card">
     <h2 class="title-text">Mina Recept</h2>
 
     <!-- Knapp som visar / döljer formuläret -->
@@ -50,7 +50,6 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import Button from 'primevue/button'
-import OverlayPanel from 'primevue/overlaypanel'
 
 // Importera ditt formulär som komponent
 import RecipeForm from '@/components/RecipeForm.vue'
@@ -121,6 +120,14 @@ const onRecipeSaved = () => {
 </script>
 
 <style scoped>
+.card {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ccc;
+}
+
 .recipe-list {
   list-style: none;
   padding: 0;
@@ -133,8 +140,6 @@ const onRecipeSaved = () => {
 
 .recipe-name {
   cursor: pointer;
-  color: #2a7ae2;
-  text-decoration: underline;
   transition: color 0.3s;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Användarlista:</h1>
+    <h2>Användarlista:</h2>
     <ul class="user-list">
       <li
         v-for="(user, index) in sortedUserList"
@@ -11,7 +11,6 @@
         <Button icon="pi pi-trash" severity="danger" @click="deleteUser(user.id)"/>
       </li>
     </ul>
-
   </div>
 </template>
 

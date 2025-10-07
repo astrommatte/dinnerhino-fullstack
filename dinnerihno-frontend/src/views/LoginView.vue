@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <!-- <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i> -->
     <Form :validation-schema="schema" @submit="handleSubmit">
       <div class="p-fluid">
         <h2>{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</h2>
@@ -41,34 +42,44 @@
 
         <div class="field">
           <Field name="password" v-slot="{ field }">
-            <Password
-              id="password"
-              v-bind="field"
-              toggleMask
-              placeholder="Lösenord"
-              :class="{ 'p-invalid': errors.password }"
-            />
+            <div class="password-container">
+              <Password
+                v-if="!isRegistering"
+                v-bind="field"
+                toggleMask
+                id="password"
+                placeholder="Lösenord"
+                :feedback="false"
+              />
+              <Password
+                id="password"
+                v-if="isRegistering"
+                v-bind="field"
+                toggleMask
+                placeholder="Lösenord"
+                :class="{ 'p-invalid': errors.password }"
+              />
+            </div>
           </Field>
           <ErrorMessage name="password" class="p-error" />
         </div>
-
-        <Button type="submit">{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</Button>
+      </div>
+        <div class="login-view-buttons">
+          <Button type="submit">{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</Button>
+          <Button
+            class="toggle-button"
+            @click="toggleMode"
+          >
+            {{ isRegistering ? 'Har du redan ett konto?' : 'Skapa ny användare' }}
+          </Button>
       </div>
     </Form>
-
-    <Button
-      class="toggle-button"
-      @click="toggleMode"
-    >
-      {{ isRegistering ? 'Har du redan ett konto?' : 'Skapa ny användare' }}
-    </Button>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
-import { useRouter } from 'vue-router'
 import * as yup from 'yup'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
@@ -76,11 +87,11 @@ import Button from 'primevue/button'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/useAuthStore'
 
-const firstName = ref('')
-const lastName = ref('')
-const email = ref('')
-const password = ref('')
-const currentUser = ref('')
+// const firstName = ref('')
+// const lastName = ref('')
+// const email = ref('')
+// const password = ref('')
+// const currentUser = ref('')
 const error = ref(null)
 const isRegistering = ref(false)
 const authStore = useAuthStore()
@@ -125,16 +136,11 @@ const handleSubmit = async (values) => {
     await authStore.login(values)   // Och här också
   }
 }
-
-
-
-
 // Form state
 const { errors } = useForm()
 </script>
 
 <style scoped>
-
 .card {
   max-width: 400px;
   margin: 2rem auto;
@@ -143,8 +149,31 @@ const { errors } = useForm()
   box-shadow: 0 0 10px #ccc;
 }
 
-.field {
+.p-fluid{
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+input {
+  min-width: 234px;
+}
+
+.field{
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.login-view-buttons{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+button{
+  font-size: 12px;
 }
 
 .p-error {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Handlingslista:</h1>
     <ul class="shopping-list">
       <li
         v-for="(item, index) in sortedShoppingList"
@@ -17,7 +16,7 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useShoppingListStore } from '@/stores/useShoppingListStore';
 import { useRecipeStore } from '@/stores/useRecipeStore';
 

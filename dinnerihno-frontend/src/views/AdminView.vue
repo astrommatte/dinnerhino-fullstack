@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card">
     <h2 class="title-text">Admin</h2>
 
     <UserListTable v-if="hasUsers" />
@@ -36,3 +36,13 @@ onMounted(() => {
   fetchUsers()
 })
 </script>
+
+<style scoped>
+  .card {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+  }
+</style>

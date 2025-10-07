@@ -23,6 +23,7 @@ import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast'
 import Menubar from 'primevue/menubar';
 import Popover from 'primevue/popover'
+import { Card } from 'primevue'
 
 import 'primeicons/primeicons.css'
 
@@ -51,6 +52,7 @@ app.component('ProgressSpinner', ProgressSpinner)
 app.component('Toast', Toast)
 app.component('Menubar', Menubar)
 app.component('Popover', Popover)
+app.component('Card', Card)
 
 app.directive('tooltip', Tooltip);
 
