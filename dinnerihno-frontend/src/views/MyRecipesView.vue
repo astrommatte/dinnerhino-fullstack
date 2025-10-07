@@ -3,7 +3,11 @@
     <h2 class="title-text">Mina Recept</h2>
 
     <!-- Knapp som visar / döljer formuläret -->
-    <Button :label="showCreateForm ? 'Avbryt' : 'Skapa nytt recept' " @click="showCreateForm = !showCreateForm" />
+    <Button 
+      :label="showCreateForm ? 'Avbryt' : 'Skapa nytt recept'" 
+      @click="toggleForm" 
+    />
+
 
     <!-- Formuläret visas när showCreateForm är true -->
     <RecipeForm
@@ -22,7 +26,7 @@
 
 
     <!-- OverlayPanel från PrimeVue -->
-    <OverlayPanel ref="op">
+    <Popover ref="op">
       <div v-if="selectedRecipe">
         <h3>{{ selectedRecipe.name }}</h3>
         <p>{{ selectedRecipe.description }}</p>
@@ -38,14 +42,13 @@
           <Button label="Ta bort" severity="danger" @click="deleteRecipe(selectedRecipe.id)" />
         </div>
       </div>
-    </OverlayPanel>
+    </Popover>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import OverlayPanel from 'primevue/overlaypanel'
 
@@ -59,6 +62,13 @@ const selectedRecipe = ref(null)
 const showCreateForm = ref(false)
 const recipeToEdit = ref(null)
 
+const toggleForm = () => {
+  if (showCreateForm.value) {
+    recipeToEdit.value = null
+  }
+  showCreateForm.value = !showCreateForm.value
+}
+
 const fetchRecipes = async () => {
   const res = await axios.get(`${apiUrl}/api/recipes/my`, {
     headers: { Authorization: localStorage.getItem('auth') }
@@ -66,7 +76,9 @@ const fetchRecipes = async () => {
   recipes.value = res.data
 }
 
-onMounted(fetchRecipes)
+onMounted(()=> {
+  fetchRecipes()
+})
 
 const showIngredients = (event, recipe) => {
   selectedRecipe.value = recipe

@@ -22,7 +22,7 @@ import Tooltip from 'primevue/tooltip';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast'
 import Menubar from 'primevue/menubar';
-import OverlayPanel from 'primevue/overlaypanel'
+import Popover from 'primevue/popover'
 
 import 'primeicons/primeicons.css'
 
@@ -50,7 +50,7 @@ app.component('FileUpload', FileUpload)
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('Toast', Toast)
 app.component('Menubar', Menubar)
-app.component('OverlayPanel', OverlayPanel)
+app.component('Popover', Popover)
 
 app.directive('tooltip', Tooltip);
 

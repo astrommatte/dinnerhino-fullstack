@@ -1,27 +1,38 @@
 <template>
   <div>
-    <h2 class="title-text">Adminpanel</h2>
-    <div v-for="user in users" :key="user.id">
-      <p>{{ user.username }} - {{ user.roles.join(', ') }}</p>
-      <button @click="deleteUser(user.id)">Ta bort användare</button>
+    <h2 class="title-text">Admin</h2>
+
+    <UserListTable v-if="hasUsers" />
+    <div v-else>
+      <p>Inga användare att visa.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import api from '../axios'
+import { onMounted, computed } from 'vue'
+import axios from 'axios'
+import UserListTable from '@/components/UserListTable.vue'
+import { useUserListStore } from '@/stores/useUserStore'
 
-const users = ref([])
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const userStore = useUserListStore()
 
-onMounted(async () => {
-  const res = await api.get('/api/users') // kräver admin
-  users.value = res.data
-})
+const hasUsers = computed(() => userStore.users.length > 0)
 
-function deleteUser(id) {
-  api.delete(`/api/users/${id}`).then(() => {
-    users.value = users.value.filter(u => u.id !== id)
-  })
+const fetchUsers = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/api/users`, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+    userStore.setUserList(res.data)
+    console.log(res.data)
+  } catch (err) {
+    console.error('Kunde inte hämta användare:', err)
+  }
 }
+
+onMounted(() => {
+  fetchUsers()
+})
 </script>

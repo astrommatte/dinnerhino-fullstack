@@ -1,26 +1,29 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+const overriddenItems = ref([])
+
 export const useShoppingListStore = defineStore('shoppingList', () => {
   const ingredients = ref([])
-
-  // const generateFromRecipes = (recipes) => {
-  //   ingredients.value = []
-  //   recipes.forEach(recipe => {
-  //     recipe.ingredients.forEach(ingredient => {
-  //       ingredients.value.push(ingredient)
-  //     })
-  //   })
-  // }
 
   const setShoppingList = (ingredientList) => {
     ingredients.value = ingredientList
   }
 
+  const setOverriddenItems = (items) => {
+    overriddenItems.value = items
+  }
+
+  const isMarkedAsAtHome = (ingredientName) => {
+    return overriddenItems.value.some(item => item.name === ingredientName && item.isAlreadyAtHome)
+  }
+
   // ✅ Här måste du returnera allt du vill kunna använda i komponenterna
   return {
     ingredients,
-    //generateFromRecipes,
-    setShoppingList
+    setShoppingList,
+    overriddenItems,
+    setOverriddenItems,
+    isMarkedAsAtHome,
   }
 })

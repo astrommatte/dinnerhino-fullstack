@@ -29,12 +29,17 @@ export const useRecipeStore = defineStore('recipe', () => {
       currentIndex.value++
     } else {
       console.log('Inga fler recept.')
+      startOver()
     }
   }
 
   function reset() {
     currentIndex.value = 0
     likedRecipes.value = []
+  }
+
+    function startOver() {
+    currentIndex.value = 0
   }
 
   return {
@@ -45,5 +50,6 @@ export const useRecipeStore = defineStore('recipe', () => {
     likeCurrentRecipe,
     skipCurrentRecipe,
     reset,
+    startOver,
   }
 })

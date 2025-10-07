@@ -1,5 +1,6 @@
 package com.astrom.dinnerihno.user;
 
+import com.astrom.dinnerihno.recipe.Recipe;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes = new ArrayList<>();
 }
 

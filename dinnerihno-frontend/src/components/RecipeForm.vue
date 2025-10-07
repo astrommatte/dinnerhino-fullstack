@@ -79,6 +79,7 @@ watch(() => props.existingRecipe, (newVal) => {
     resetForm()
   }
 }, { immediate: true })
+
 const addIngredient = () => {
   recipe.value.ingredients.push({ name: '', quantity: '' })
 }

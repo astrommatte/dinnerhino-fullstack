@@ -1,8 +1,9 @@
 <template>
   <div>
     <h2 class="title-text">Handlingslista</h2>
-
-    <ShoppingListTable v-if="hasShoppingList" />
+    <ShoppingListTable 
+      v-if="hasShoppingList" 
+    />
     <div v-else>
       <p>Ingen handlingslista att visa.</p>
     </div>
@@ -28,9 +29,11 @@ const fetchShoppingList = async () => {
     shoppingListStore.setShoppingList(res.data)
     console.log(res.data)
   } catch (err) {
-    console.error('Kunde inte hämta recept:', err)
+    console.error('Kunde inte hämta handlingslista:', err)
   }
 }
 
-onMounted(fetchShoppingList)
+onMounted(() => {
+  fetchShoppingList()
+})
 </script>

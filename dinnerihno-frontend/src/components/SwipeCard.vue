@@ -11,36 +11,51 @@
       <p>{{ currentRecipe.description }}</p>
       <p><strong>Portioner:</strong> {{ currentRecipe.servings }}</p>
 
-      <h4>Ingredienser</h4>
+      <h4>Ingredienser:</h4>
       <ul>
         <li
           v-for="(ingredient, index) in currentRecipe.ingredients"
           :key="index"
+          :style="{ textDecoration: ingredient.isAlreadyAtHome ? 'line-through' : 'none' }"
+          @click="toggleAtHome(ingredient)"
         >
           {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name }}
         </li>
       </ul>
-      <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe()" />
-      <Button icon="pi pi-times" @click="recipeStore.skipCurrentRecipe()" />
+      <div class="swipe-buttons">
+        <Button icon="pi pi-angle-left" @click="recipeStore.skipCurrentRecipe()" />
+        <Button icon="pi pi-angle-right" @click="recipeStore.likeCurrentRecipe()" />
+      </div>
     </div>
+    <p>* Swipea vänster för att lägga till recept</p>
+    <p>* Swipea höger för att skippa recept</p>
+    <p>* Här inne kan du trycka på en ingrediens om du redan har det hemma. Då kommer den redan vara överstruken i handlingslistan</p>
   </div>
   
 
   <div class="reset-and-submit-buttons">
     <Button icon="pi pi-refresh" label="Avbryt" severity="warning" @click="reset" />
+    <Button icon="pi pi-angle-right" @click="openInfoModal()">Info</Button>
     <Button icon="pi pi-check" label="Klar" severity="success" @click="submit" />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRecipeStore } from '../stores/useRecipeStore'
+import { useShoppingListStore } from '@/stores/useShoppingListStore'
 import router from '@/router'
 import axios from 'axios'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
+const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
+const infoModal = ref(false)
+
+const toggleAtHome = (ingredient) => {
+  ingredient.isAlreadyAtHome = !ingredient.isAlreadyAtHome
+}
 
 let startX = 0
 
@@ -66,7 +81,6 @@ const submit = async () => {
   }
 
   try {
-    // 🔽 Här skickar vi alla gillade recept parallellt till backend
     await Promise.all(
       liked.map(recipe =>
         axios.post(`${apiUrl}/api/shopping-list/add/${recipe.id}`, null, {
@@ -77,7 +91,16 @@ const submit = async () => {
       )
     )
 
-    // ✅ Navigera till shoppinglistan när alla POST-anrop är klara
+    // 💾 Spara de lokala ingrediens-flaggorna
+    shoppingListStore.setOverriddenItems(
+      liked.flatMap(recipe =>
+        recipe.ingredients.map(ingredient => ({
+          name: ingredient.name,
+          isAlreadyAtHome: !!ingredient.isAlreadyAtHome
+        }))
+      )
+    )
+
     router.push('/shoppinglist')
   } catch (error) {
     console.error("Fel vid skick av recept:", error)
@@ -85,17 +108,26 @@ const submit = async () => {
   }
 }
 
-
 const endSwipe = (e) => {
   const endX = e.changedTouches[0].clientX
   const diff = endX - startX
 
   if (diff > 50) {
-    recipeStore.likeCurrentRecipe()
-  } else if (diff < -50) {
     recipeStore.skipCurrentRecipe()
+  } else if (diff < -50) {
+    recipeStore.likeCurrentRecipe()
   }
 }
+
+const openInfoModal = (() => {
+  console.log('Nu ska det öppnas en modal med INFO')
+  infoModal.value = true
+})
+
+const closeInfoModal = (() => {
+  console.log('Stänger info modalen')
+  infoModal.value = false
+})
 </script>
 
 <style scoped>
@@ -118,7 +150,15 @@ const endSwipe = (e) => {
 }
 
 .reset-and-submit-buttons{
+  display: flex;
   max-width: 500px;
+  justify-content: space-between;
   margin: auto;
+}
+
+.swipe-buttons{
+  display: flex;
+  margin: auto;
+  justify-content: space-between;
 }
 </style>

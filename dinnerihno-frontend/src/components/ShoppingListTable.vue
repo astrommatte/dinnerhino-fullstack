@@ -3,51 +3,35 @@
     <h1>Handlingslista:</h1>
     <ul class="shopping-list">
       <li
-        v-for="(item, index) in shoopingListItems"
+        v-for="(item, index) in sortedShoppingList"
         :key="index"
-        :class="{ completed: completedItems.has(index) }"
+        :style="{ textDecoration: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 'line-through' : 'none' }"
         @click="toggleItem(index)"
       >
-        {{ item.ingredientName }} –
-        <em>{{ item.quantity }}</em>
+        {{ item.ingredientName }} – <em>{{ item.quantity }}</em>
       </li>
     </ul>
     <Button @click="deleteShoppingList">Ta bort hela listan</Button>
-  </div>
-
-
-    <div>
-    <h1>Receptnamn:</h1>
-    <ul>
-      <li
-        v-for="(item, index) in shoopingListItems"
-        :key="index"
-        @click="deleteItem(index)"
-      >
-        <strong>{{ item.recipeName }}</strong>:
-      </li>
-    </ul>
   </div>
 </template>
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useShoppingListStore } from '@/stores/useShoppingListStore';
+import { useRecipeStore } from '@/stores/useRecipeStore';
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
-const shoopingListItems = ref([])
+const recipeStore = useRecipeStore()
+const { isMarkedAsAtHome } = useShoppingListStore()
+const shoppingListStore = useShoppingListStore()
 const completedItems = ref(new Set())
 
-const fetchShoppinglist = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/api/shopping-list`, {
-      headers: { Authorization: localStorage.getItem('auth') }
-    })
-    shoopingListItems.value = res.data
-  } catch (err) {
-    console.error('Kunde inte hämta handlingslista:', err)
-  }
-}
+const sortedShoppingList = computed(() => {
+  return [...shoppingListStore.ingredients].sort((a, b) =>
+    a.ingredientName.localeCompare(b.ingredientName, 'sv')
+  )
+})
 
 const deleteShoppingList = async () => {
   if (!confirm('Är du säker på att du vill ta bort hela handlingslistan?')) return
@@ -57,28 +41,15 @@ const deleteShoppingList = async () => {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     alert('Handlingslista borttagen')
+    
   } catch (err) {
     console.error(err)
     alert('Kunde inte ta bort handlingslistan')
+  } finally {
+    shoppingListStore.setShoppingList([])
+    recipeStore.reset()
   }
 }
-
-// const deleteItem = async (id) => {
-//   if (!confirm('Är du säker på att du vill ta bort receptet?')) return
-
-//   try {
-//     await axios.delete(`${apiUrl}/api/shopping-list/${id}`, {
-//       headers: { Authorization: localStorage.getItem('auth') }
-//     })
-//     recipes.value = recipes.value.filter(r => r.id !== id)
-//     alert('Recept borttaget')
-//   } catch (err) {
-//     console.error(err)
-//     alert('Kunde inte ta bort receptet')
-//   }
-// }
-
-onMounted(fetchShoppinglist)
 
 const toggleItem = (index) => {
   if (completedItems.value.has(index)) {
@@ -87,6 +58,7 @@ const toggleItem = (index) => {
     completedItems.value.add(index)
   }
 }
+
 </script>
 
 <style scoped>

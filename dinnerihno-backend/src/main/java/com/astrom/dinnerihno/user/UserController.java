@@ -47,7 +47,7 @@ public class UserController {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);

@@ -32,5 +32,7 @@ const fetchRecipes = async () => {
   }
 }
 
-onMounted(fetchRecipes)
+onMounted(() => {
+  fetchRecipes()
+})
 </script>

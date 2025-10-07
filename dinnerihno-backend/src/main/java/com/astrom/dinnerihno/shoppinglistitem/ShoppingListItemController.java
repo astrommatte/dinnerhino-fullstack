@@ -23,7 +23,6 @@ public class ShoppingListItemController {
         shoppingListService.addRecipeToShoppingList(recipeId, currentUser);
     }
 
-
     @GetMapping
     public List<ShoppingListItemDTO> getShoppingList(Principal principal) {
         return shoppingListService.getShoppingListDto(principal.getName());
