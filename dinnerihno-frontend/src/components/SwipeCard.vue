@@ -131,11 +131,6 @@ const openInfoModal = (() => {
   console.log('Nu ska det öppnas en modal med INFO')
   infoModal.value = true
 })
-
-const closeInfoModal = (() => {
-  console.log('Stänger info modalen')
-  infoModal.value = false
-})
 </script>
 
 <style scoped>

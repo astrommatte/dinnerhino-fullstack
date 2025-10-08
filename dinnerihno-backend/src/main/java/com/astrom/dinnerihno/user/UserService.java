@@ -32,9 +32,11 @@ public class UserService {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setActive(false);
 
         if (adminEmail.equalsIgnoreCase(dto.getEmail())) {
             user.setRole(UserRole.ADMIN);
+            user.setActive(true);
         } else {
             user.setRole(UserRole.USER);
         }
@@ -60,6 +62,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
+        user.setActive(dto.isActive());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }

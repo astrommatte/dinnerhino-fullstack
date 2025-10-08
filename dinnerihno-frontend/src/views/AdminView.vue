@@ -1,48 +1,78 @@
 <template>
-  <div class="card">
-    <h2 class="title-text">Admin</h2>
+  <UserListTable
+    @edit-user="openEditDialog"
+    @delete-user="deleteUser"
+  />
 
-    <UserListTable v-if="hasUsers" />
-    <div v-else>
-      <p>Inga användare att visa.</p>
-    </div>
-  </div>
+  <UserForm
+    v-model="editDialogVisible"
+    :userData="editUser"
+    @save="saveEdit"
+    @cancel="cancelEdit"
+  />
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import UserListTable from '@/components/UserListTable.vue'
+import UserForm from '@/components/UserForm.vue'
 import { useUserListStore } from '@/stores/useUserStore'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const userStore = useUserListStore()
 
-const hasUsers = computed(() => userStore.users.length > 0)
+const editDialogVisible = ref(false)
+const editUser = ref({})
 
-const fetchUsers = async () => {
+function openEditDialog(user) {
+  editUser.value = { ...user }
+  editDialogVisible.value = true
+}
+
+function cancelEdit() {
+  editDialogVisible.value = false
+}
+
+async function saveEdit(user) {
+  try {
+    await axios.put(`${apiUrl}/api/users/${user.id}`, user, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+    alert('Användare uppdaterad!')
+    editDialogVisible.value = false
+    await fetchUsers()
+  } catch (err) {
+    console.error(err)
+    alert('Kunde inte uppdatera användaren.')
+  }
+}
+
+async function deleteUser(user) {
+  if (!confirm(`Är du säker på att du vill ta bort ${user.firstName} ${user.lastName}?`)) return
+
+  try {
+    await axios.delete(`${apiUrl}/api/users/${user.id}`, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+    alert('Användare borttagen')
+    await fetchUsers()
+  } catch (err) {
+    console.error(err)
+    alert('Kunde inte ta bort användaren.')
+  }
+}
+
+async function fetchUsers() {
   try {
     const res = await axios.get(`${apiUrl}/api/users`, {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     userStore.setUserList(res.data)
-    console.log(res.data)
   } catch (err) {
     console.error('Kunde inte hämta användare:', err)
   }
 }
 
-onMounted(() => {
-  fetchUsers()
-})
+onMounted(fetchUsers)
 </script>
-
-<style scoped>
-  .card {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #ccc;
-  }
-</style>

@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-
-const overriddenItems = ref([])
+import { ref, watch } from 'vue'
 
 export const useShoppingListStore = defineStore('shoppingList', () => {
   const ingredients = ref([])
+
+  // Läs overriddenItems från localStorage vid initiering
+  const overriddenItems = ref(
+    JSON.parse(localStorage.getItem('overriddenItems') || '[]')
+  )
 
   const setShoppingList = (ingredientList) => {
     ingredients.value = ingredientList
@@ -18,7 +21,11 @@ export const useShoppingListStore = defineStore('shoppingList', () => {
     return overriddenItems.value.some(item => item.name === ingredientName && item.isAlreadyAtHome)
   }
 
-  // ✅ Här måste du returnera allt du vill kunna använda i komponenterna
+  // Spara overriddenItems i localStorage varje gång den ändras
+  watch(overriddenItems, (newVal) => {
+    localStorage.setItem('overriddenItems', JSON.stringify(newVal))
+  }, { deep: true })
+
   return {
     ingredients,
     setShoppingList,

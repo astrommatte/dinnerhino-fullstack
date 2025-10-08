@@ -1,10 +1,15 @@
 <template>
   <div>
     <ul class="shopping-list">
+      <h4>Antal recept i listan: {{ recipeStore.recipes.length }}</h4>
       <li
         v-for="(item, index) in sortedShoppingList"
         :key="index"
-        :style="{ textDecoration: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 'line-through' : 'none' }"
+        :style="{ 
+          textDecoration: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 'line-through' : 'none',
+          opacity: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 0.2 : 1
+        }"
+
         @click="toggleItem(index)"
       >
         {{ item.ingredientName }} – <em>{{ item.quantity }}</em>
@@ -18,7 +23,7 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useShoppingListStore } from '@/stores/useShoppingListStore';
 import { useRecipeStore } from '@/stores/useRecipeStore';
 
@@ -42,13 +47,15 @@ const deleteShoppingList = async () => {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     alert('Handlingslista borttagen')
-    
+
   } catch (err) {
     console.error(err)
     alert('Kunde inte ta bort handlingslistan')
   } finally {
     shoppingListStore.setShoppingList([])
     recipeStore.reset()
+    completedItems.value = new Set()
+    localStorage.removeItem('completedItems')
   }
 }
 
@@ -58,8 +65,31 @@ const toggleItem = (index) => {
   } else {
     completedItems.value.add(index)
   }
+  // Triggera reaktivitet på Set
+  completedItems.value = new Set(completedItems.value)
 }
 
+onMounted(() => {
+  const saved = localStorage.getItem('completedItems')
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved)
+      completedItems.value = new Set(parsed)
+    } catch {
+      completedItems.value = new Set()
+    }
+  }
+})
+
+// Spara till localStorage varje gång completedItems ändras
+watch(
+  completedItems,
+  (newVal) => {
+    // Spara som array (Set kan ej sparas direkt)
+    localStorage.setItem('completedItems', JSON.stringify([...newVal]))
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>

@@ -1,5 +1,6 @@
 package com.astrom.dinnerihno.user;
 
+import com.astrom.dinnerihno.mapper.DtoMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,7 @@ public class AuthController {
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setRole(user.getRole());
+        userDto.setActive(user.isActive());
 
         return ResponseEntity.ok(userDto);
     }

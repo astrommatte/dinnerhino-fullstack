@@ -3,6 +3,7 @@ package com.astrom.dinnerihno.security;
 
 import com.astrom.dinnerihno.user.User;
 import com.astrom.dinnerihno.user.UserRepository;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        if (!user.isActive()) {
+            throw new DisabledException("Account is not activated");
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

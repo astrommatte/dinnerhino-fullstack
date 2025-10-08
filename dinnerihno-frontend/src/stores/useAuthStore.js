@@ -41,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
     })
 
     user.value = meRes.data
+    console.log(user.value)
 
     // Om vi kommer hit = OK, spara auth och navigera
     localStorage.setItem('auth', authHeader)
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
   } catch (err) {
     // Hantera fel, t.ex. visa felmeddelande
     console.error('Inloggning misslyckades', err)
-    alert('Felaktigt användarnamn eller lösenord')
+    alert('Felaktigt användarnamn eller lösenord, eller måste admin göra dig aktiv.')
   }
 }
 

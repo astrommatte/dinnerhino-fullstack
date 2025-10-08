@@ -29,6 +29,7 @@ public class DtoMapper {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setRole(user.getRole() != null ? UserRole.valueOf(user.getRole().name()) : null);
+        dto.setActive(user.isActive());
         return dto;
     }
 
