@@ -51,7 +51,6 @@ const sortedUserList = computed(() => {
 })
 
 function getRowClass(user) {
-  console.log('getRowClass called with:', user)
   return user && user.active === false ? 'inactive-row' : null
 }
 
