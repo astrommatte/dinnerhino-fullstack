@@ -1,5 +1,11 @@
 <template>
-  <DataTable :value="sortedUserList" responsiveLayout="scroll" class="p-datatable-sm">
+    <DataTable
+      :value="sortedUserList"
+      responsiveLayout="scroll"
+      class="p-datatable-sm"
+      :rowClass="getRowClass"
+    >
+
     <Column field="firstName" header="Förnamn" />
     <Column field="lastName" header="Efternamn" />
     <Column field="email" header="E-post" />
@@ -43,4 +49,17 @@ const sortedUserList = computed(() => {
     a.lastName.localeCompare(b.lastName, 'sv')
   )
 })
+
+function getRowClass(user) {
+  console.log('getRowClass called with:', user)
+  return user && user.active === false ? 'inactive-row' : null
+}
+
 </script>
+
+<style>
+  .inactive-row {
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+  }
+</style>

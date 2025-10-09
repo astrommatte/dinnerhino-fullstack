@@ -18,7 +18,9 @@ import axios from 'axios'
 import UserListTable from '@/components/UserListTable.vue'
 import UserForm from '@/components/UserForm.vue'
 import { useUserListStore } from '@/stores/useUserStore'
+import { useToaster } from '@/stores/useToastStore'
 
+const { showSuccessToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const userStore = useUserListStore()
 
@@ -28,6 +30,7 @@ const editUser = ref({})
 function openEditDialog(user) {
   editUser.value = { ...user }
   editDialogVisible.value = true
+  console.log(user)
 }
 
 function cancelEdit() {
@@ -39,12 +42,11 @@ async function saveEdit(user) {
     await axios.put(`${apiUrl}/api/users/${user.id}`, user, {
       headers: { Authorization: localStorage.getItem('auth') }
     })
-    alert('Användare uppdaterad!')
+    showSuccessToast('Användare uppdaterad!')
     editDialogVisible.value = false
     await fetchUsers()
   } catch (err) {
-    console.error(err)
-    alert('Kunde inte uppdatera användaren.')
+    showErrorToast('Kunde inte uppdatera användaren.')
   }
 }
 
@@ -55,11 +57,10 @@ async function deleteUser(user) {
     await axios.delete(`${apiUrl}/api/users/${user.id}`, {
       headers: { Authorization: localStorage.getItem('auth') }
     })
-    alert('Användare borttagen')
+    showSuccessToast('Användaren är nu borttagen')
     await fetchUsers()
   } catch (err) {
-    console.error(err)
-    alert('Kunde inte ta bort användaren.')
+    showErrorToast('Kunde inte ta bort användaren.')
   }
 }
 
@@ -69,10 +70,13 @@ async function fetchUsers() {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     userStore.setUserList(res.data)
+
   } catch (err) {
-    console.error('Kunde inte hämta användare:', err)
+    showErrorToast('Gick inte att hämta användare')
   }
 }
 
-onMounted(fetchUsers)
+onMounted(() => {
+  fetchUsers()
+})
 </script>

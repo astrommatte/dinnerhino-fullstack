@@ -42,6 +42,9 @@ import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import axios from 'axios'
+import { useToaster } from '@/stores/useToastStore'
+
+const { showSuccessToast, showErrorToast } = useToaster()
 
 const props = defineProps({
   existingRecipe: {
@@ -95,19 +98,18 @@ const submitRecipe = async () => {
     if (props.existingRecipe && props.existingRecipe.id) {
       // Redigera recept
       await axios.put(`${apiUrl}/api/recipes/${props.existingRecipe.id}`, recipe.value, { headers })
-      alert('Recept uppdaterat!')
+      showSuccessToast('Recept uppdaterat!')
     } else {
       // Skapa nytt recept
       await axios.post(`${apiUrl}/api/recipes`, recipe.value, { headers })
-      alert('Recept skapat!')
+      showSuccessToast('Recept skapat!')
     }
 
     emit('saved') // Meddela förälder
 
     resetForm()
   } catch (error) {
-    console.error(error)
-    alert('Något gick fel vid sparandet av recept.')
+    showErrorToast('Något gick fel vid sparandet av recept.')
   }
 }
 </script>
