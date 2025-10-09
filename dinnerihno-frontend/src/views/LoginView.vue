@@ -4,40 +4,46 @@
       <h2>{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</h2>
 
       <div class="field">
-        <InputText
-          v-model="email"
-          placeholder="E-post"
-        />
+        <FloatLabel variant="on">
+          <label for="email">Email</label>
+          <InputText
+            v-model="email"     
+          />
+        </FloatLabel>
       </div>
 
       <div class="field" v-if="isRegistering">
-        <InputText
-          v-model="firstName"
-          placeholder="Förnamn"
-        />
+        <FloatLabel variant="on">
+          <label for="firstName">Förnamn</label>
+          <InputText
+            v-model="firstName"
+          />
+        </FloatLabel>
       </div>
 
       <div class="field" v-if="isRegistering">
-        <InputText
-          v-model="lastName"
-          placeholder="Efternamn"
-        />
+        <FloatLabel variant="on">
+          <label for="lastName">Efternamn</label>
+          <InputText
+            v-model="lastName"
+          />
+        </FloatLabel>
       </div>
 
       <div class="field">
-        <Password
-          v-if="isRegistering"
-          v-model="password"
-          toggleMask
-          placeholder="Lösenord"
-        />
           <Password
-          v-else
-          v-model="password"
-          toggleMask
-          placeholder="Lösenord"
-          :feedback="false"
-        />
+            v-if="isRegistering"
+            v-model="password"
+            toggleMask
+            placeholder="Lösenord"
+          />
+          <Password
+            v-else
+            v-model="password"
+            toggleMask
+            :feedback="false"
+            placeholder="Lösenord"
+          />
       </div>
 
       <div class="login-view-buttons">
@@ -62,6 +68,7 @@ import axios from 'axios'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import { useToaster } from '@/stores/useToastStore'
+import { FloatLabel } from 'primevue'
 
 const { showSuccessToast, showErrorToast } = useToaster()
 

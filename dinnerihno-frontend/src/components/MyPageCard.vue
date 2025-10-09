@@ -1,23 +1,28 @@
 <template>
   <form @submit.prevent="updateUser">
     <div class="field">
-      <label for="firstName">Förnamn</label>
-      <InputText id="firstName" v-model="user.firstName" placeholder="Förnamn" />
+      <FloatLabel variant="on">
+        <label for="firstName">Förnamn</label>
+        <InputText id="firstName" v-model="user.firstName"/>
+      </FloatLabel>
     </div>
 
     <div class="field">
-      <label for="lastName">Efternamn</label>
-      <InputText id="lastName" v-model="user.lastName" placeholder="Efternamn" />
+      <FloatLabel variant="on">
+        <label for="lastName">Efternamn</label>
+        <InputText id="lastName" v-model="user.lastName" autocomplete="true"/>
+      </FloatLabel>
     </div>
 
     <div class="field">
-      <label for="email">E-post</label>
-      <InputText id="email" v-model="user.email" placeholder="E-post" />
+      <FloatLabel variant="on">
+        <label for="email">E-post</label>
+        <InputText id="email" v-model="user.email" />
+      </FloatLabel>
     </div>
 
     <div class="field">
-      <label for="password">Nytt lösenord (valfritt)</label>
-      <Password id="password" v-model="user.password" toggleMask placeholder="Lösenord" />
+        <Password id="password" v-model="user.password" toggleMask placeholder="Lösenord"/>
     </div>
 
     <div class="update-button">
@@ -33,6 +38,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { FloatLabel } from 'primevue'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const authStore = useAuthStore()
