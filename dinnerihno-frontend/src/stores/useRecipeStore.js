@@ -9,18 +9,17 @@ export const useRecipeStore = defineStore('recipe', () => {
   const currentIndex = ref(0)
 
   const setRecipes = (newRecipes) => {
-    recipes.value = newRecipes
+    recipes.value = shuffle(newRecipes)
     currentIndex.value = 0
   }
 
+
   const likeCurrentRecipe = () => {
-    console.log('Gillade recept:', recipes.value[currentIndex.value])
     likedRecipes.value.push(recipes.value[currentIndex.value])
     nextRecipe()
   }
 
   const skipCurrentRecipe = () => {
-    console.log('Skippade recept:', recipes.value[currentIndex.value])
     nextRecipe()
   }
 
@@ -28,7 +27,6 @@ export const useRecipeStore = defineStore('recipe', () => {
     if (currentIndex.value < recipes.value.length - 1) {
       currentIndex.value++
     } else {
-      console.log('Inga fler recept.')
       startOver()
     }
   }
@@ -36,11 +34,20 @@ export const useRecipeStore = defineStore('recipe', () => {
   function reset() {
     currentIndex.value = 0
     likedRecipes.value = []
-  }
-
-    function startOver() {
+    recipes.value = shuffle(recipes.value)
     currentIndex.value = 0
   }
+
+  function startOver() {
+    // Skapa en ny slumpad ordning av recepten
+    recipes.value = shuffle(recipes.value)
+    currentIndex.value = 0
+  }
+
+  function shuffle(array) {
+    return [...array].sort(() => Math.random() - 0.5)
+  }
+
 
   return {
     recipes,

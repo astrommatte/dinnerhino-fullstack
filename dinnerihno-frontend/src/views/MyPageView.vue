@@ -16,7 +16,7 @@
       max-width: auto;
       margin: 1rem;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ccc;
+      /* border-radius: 8px;
+      box-shadow: 0 0 10px #ccc; */
   }
 </style>

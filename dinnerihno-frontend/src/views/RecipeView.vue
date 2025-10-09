@@ -14,7 +14,9 @@ import { onMounted, computed } from 'vue'
 import axios from 'axios'
 import SwipeCard from '../components/SwipeCard.vue'
 import { useRecipeStore } from '../stores/useRecipeStore'
+import { useToaster } from '@/stores/useToastStore'
 
+const { showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 
@@ -26,9 +28,8 @@ const fetchRecipes = async () => {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     recipeStore.setRecipes(res.data)
-    console.log(res.data)
   } catch (err) {
-    console.error('Kunde inte hämta recept:', err)
+    showErrorToast('Kunde inte hämta recept')
   }
 }
 

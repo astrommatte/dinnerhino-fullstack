@@ -60,6 +60,10 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { hideLoading, showLoading } from '@/stores/useLoadingStore'
+import { useToaster } from '@/stores/useToastStore'
+
+const { showSuccessToast, showErrorToast } = useToaster()
 
 const isRegistering = ref(false)
 const authStore = useAuthStore()
@@ -86,6 +90,7 @@ const resetFields = () => {
 const handleSubmit = async () => {
   if (isRegistering.value) {
     try {
+      showLoading()
       await axios.post(`${apiUrl}/api/users/create`, {
         firstName: firstName.value,
         lastName: lastName.value,
@@ -94,21 +99,25 @@ const handleSubmit = async () => {
       })
       resetFields()
       toggleMode()
-      alert("Användare skapad!")
+      showSuccessToast('Användare skapad!')
     } catch (err) {
       console.error(err)
-      alert("Misslyckades att skapa användare")
+      showErrorToast('Misslyckades att skapa användare')
+    } finally {
+      hideLoading()
     }
   } else {
     try {
+      showLoading()
       await authStore.login({
         email: email.value,
         password: password.value
       })
 
     } catch (err) {
-      console.error(err)
-      alert("Inloggning misslyckades")
+      
+    } finally{
+      hideLoading()
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="shopping-list">
-      <h4>Antal recept i listan: {{ recipeStore.recipes.length }}</h4>
+      <h4>Antal recept valda i föregående sida: {{ recipeStore.likedRecipes.length }}</h4>
       <li
         v-for="(item, index) in sortedShoppingList"
         :key="index"
@@ -26,7 +26,10 @@ import axios from 'axios';
 import { ref, computed, onMounted, watch } from 'vue';
 import { useShoppingListStore } from '@/stores/useShoppingListStore';
 import { useRecipeStore } from '@/stores/useRecipeStore';
+import { useToaster } from '@/stores/useToastStore';
+import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 
+const { showSuccessToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 const { isMarkedAsAtHome } = useShoppingListStore()
@@ -43,19 +46,21 @@ const deleteShoppingList = async () => {
   if (!confirm('Är du säker på att du vill ta bort hela handlingslistan?')) return
 
   try {
+    showLoading()
     await axios.delete(`${apiUrl}/api/shopping-list/clear`, {
       headers: { Authorization: localStorage.getItem('auth') }
     })
-    alert('Handlingslista borttagen')
+    showSuccessToast('Handlingslistan borttagen')
 
   } catch (err) {
     console.error(err)
-    alert('Kunde inte ta bort handlingslistan')
+    showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
   } finally {
     shoppingListStore.setShoppingList([])
     recipeStore.reset()
     completedItems.value = new Set()
     localStorage.removeItem('completedItems')
+    hideLoading()
   }
 }
 

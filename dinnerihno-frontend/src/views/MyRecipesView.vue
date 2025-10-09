@@ -125,8 +125,8 @@ const onRecipeSaved = () => {
   max-width: auto;
   margin: 2rem auto;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px #ccc;
+  /* border-radius: 8px;
+  box-shadow: 0 0 10px #ccc; */
 }
 
 .recipe-list {

@@ -23,8 +23,8 @@
         </li>
       </ul>
       <div class="swipe-buttons">
-        <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe()" />
-        <Button icon="pi pi-thumbs-down" @click="recipeStore.skipCurrentRecipe()" />
+        <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe(), showSuccessToast('Recept inlagt i handlingslista!')" />
+        <Button icon="pi pi-thumbs-down" @click="recipeStore.skipCurrentRecipe(), showSuccessToast('Hoppar över recept!')" />
       </div>
     </div>
     <Popover v-if="infoModal"/>
@@ -37,11 +37,13 @@
     <Button icon="pi pi-question-circle" @click="openInfoModal()"/>
     <Button icon="pi pi-check" label="Klar" severity="success" @click="submit" />
 
-    <Dialog header="Instruktioner" v-model:visible="infoModal" modal closeOnEscape>
+    <Dialog header="Instruktioner och info" v-model:visible="infoModal" modal closeOnEscape>
       <ul>
-        <li>Swipea vänster för att lägga till</li>
-        <li>Swipea höger för att skippa</li>
-        <li>Klicka på en ingrediens om du redan har den hemma</li>
+        <li>Swipea vänster för att lägga till.</li>
+        <li>Swipea höger för att skippa.</li>
+        <li>Om du redan har en ingrediens hemma, så kan du klicka bort den direkt innan du swipear, då kommer den vara överstruken direkt
+        när du kommer till handlingslistan!</li>
+        <li>Recepten kommer slumpmässigt.</li>
       </ul>
     </Dialog>
   </div>
@@ -51,9 +53,12 @@
 import { computed, ref } from 'vue'
 import { useRecipeStore } from '../stores/useRecipeStore'
 import { useShoppingListStore } from '@/stores/useShoppingListStore'
+import { useToaster } from '@/stores/useToastStore'
+import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import router from '@/router'
 import axios from 'axios'
 
+const { showSuccessToast, showInfoToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 const shoppingListStore = useShoppingListStore()
@@ -77,8 +82,10 @@ const endSwipe = (e) => {
 
   if (diff > 50) {
     recipeStore.skipCurrentRecipe()
+    showSuccessToast('Hoppar över recept!')
   } else if (diff < -50) {
     recipeStore.likeCurrentRecipe()
+    showSuccessToast('Recept inlagt i handlingslista!')
   }
 }
 
@@ -89,17 +96,19 @@ const moveSwipe = (e) => {
 // Starta om swipen från början
 const reset = () => {
   recipeStore.reset()
+  showInfoToast('Börjar om och nollställer listan!')
 }
 
 // Skicka gillade recept till inköpslista (exempel)
 const submit = async () => {
   const liked = recipeStore.likedRecipes
   if (liked.length === 0) {
-    alert('Du har inga gillade recept att skicka.')
+    showInfoToast('Du har inga gillade recept att skicka till handlingslistan.')
     return
   }
 
   try {
+    showLoading()
     await Promise.all(
       liked.map(recipe =>
         axios.post(`${apiUrl}/api/shopping-list/add/${recipe.id}`, null, {
@@ -109,7 +118,7 @@ const submit = async () => {
         })
       )
     )
-
+    
     // 💾 Spara de lokala ingrediens-flaggorna
     shoppingListStore.setOverriddenItems(
       liked.flatMap(recipe =>
@@ -122,13 +131,13 @@ const submit = async () => {
 
     router.push('/shoppinglist')
   } catch (error) {
-    console.error("Fel vid skick av recept:", error)
-    alert('Kunde inte skicka recept till inköpslistan.')
+    showErrorToast('Kunde inte skicka recept till inköpslistan.')
+  } finally {
+    hideLoading()
   }
 }
 
 const openInfoModal = (() => {
-  console.log('Nu ska det öppnas en modal med INFO')
   infoModal.value = true
 })
 </script>
@@ -165,7 +174,7 @@ const openInfoModal = (() => {
   justify-content: space-between;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .swipe-buttons {
     display: none;
   }

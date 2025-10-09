@@ -27,7 +27,6 @@ const fetchShoppingList = async () => {
       headers: { Authorization: localStorage.getItem('auth') }
     })
     shoppingListStore.setShoppingList(res.data)
-    console.log(res.data)
   } catch (err) {
     console.error('Kunde inte hämta handlingslista:', err)
   }
