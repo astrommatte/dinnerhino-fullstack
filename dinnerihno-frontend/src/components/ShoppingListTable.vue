@@ -57,6 +57,8 @@ const deleteShoppingList = async () => {
     showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
   } finally {
     shoppingListStore.setShoppingList([])
+    shoppingListStore.setOverriddenItems([])  // Lägg till denna rad för att tömma overriddenItems i store
+    localStorage.removeItem('overriddenItems') // Rensa även från localStorage
     recipeStore.reset()
     completedItems.value = new Set()
     localStorage.removeItem('completedItems')
