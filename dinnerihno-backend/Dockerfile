@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 # ---- Kör fas ----
 FROM eclipse-temurin:17
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/dinnerihno-0.0.1-SNAPSHOT.jar app.jar
 
 # Render tilldelar en port via env-variabeln PORT – Spring Boot måste använda den
 ENV PORT=8080
