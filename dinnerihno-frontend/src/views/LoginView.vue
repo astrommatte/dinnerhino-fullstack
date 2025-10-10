@@ -108,7 +108,6 @@ const handleSubmit = async () => {
       toggleMode()
       showInfoToast('Ett meddelande har skickats till admin för bekräftelse.')
     } catch (err) {
-      console.error(err)
       showErrorToast('Misslyckades att skapa användare')
     } finally {
       hideLoading()
