@@ -37,6 +37,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/active")
+    public ResponseEntity<UserDTO> updateUserActive(@PathVariable Long id, @RequestBody CreateUserDTO dto) {
+        UserDTO updatedUser = userService.updateUserActive(id, dto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

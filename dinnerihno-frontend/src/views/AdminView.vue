@@ -2,6 +2,7 @@
   <UserListTable
     @edit-user="openEditDialog"
     @delete-user="deleteUser"
+    @edit-user-toggle-active="toggleActive"
   />
 
   <UserForm
@@ -30,7 +31,6 @@ const editUser = ref({})
 function openEditDialog(user) {
   editUser.value = { ...user }
   editDialogVisible.value = true
-  console.log(user)
 }
 
 function cancelEdit() {
@@ -61,6 +61,19 @@ async function deleteUser(user) {
     await fetchUsers()
   } catch (err) {
     showErrorToast('Kunde inte ta bort användaren.')
+  }
+}
+
+async function toggleActive(user) {
+  try {
+    await axios.put(`${apiUrl}/api/users/${user.id}/active`, { active: !user.active }, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+
+    showSuccessToast('Användaren uppdaterad!')
+    await fetchUsers()
+  } catch (err) {
+    showErrorToast('Kunde inte uppdatera användaren.')
   }
 }
 

@@ -70,7 +70,7 @@ import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import { useToaster } from '@/stores/useToastStore'
 import { FloatLabel } from 'primevue'
 
-const { showSuccessToast, showErrorToast } = useToaster()
+const { showInfoToast, showErrorToast } = useToaster()
 
 const isRegistering = ref(false)
 const authStore = useAuthStore()
@@ -106,7 +106,7 @@ const handleSubmit = async () => {
       })
       resetFields()
       toggleMode()
-      showSuccessToast('Användare skapad!')
+      showInfoToast('Ett meddelande har skickats till admin för bekräftelse.')
     } catch (err) {
       console.error(err)
       showErrorToast('Misslyckades att skapa användare')

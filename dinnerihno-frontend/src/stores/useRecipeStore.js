@@ -7,6 +7,7 @@ const likedRecipes = ref([])
 export const useRecipeStore = defineStore('recipe', () => {
   const recipes = ref([])
   const currentIndex = ref(0)
+  const loopEvent = ref(0)
 
   const setRecipes = (newRecipes) => {
     recipes.value = shuffle(newRecipes)
@@ -36,12 +37,13 @@ export const useRecipeStore = defineStore('recipe', () => {
     likedRecipes.value = []
     recipes.value = shuffle(recipes.value)
     currentIndex.value = 0
+    loopEvent.value = 0
   }
 
   function startOver() {
-    // Skapa en ny slumpad ordning av recepten
     recipes.value = shuffle(recipes.value)
     currentIndex.value = 0
+    loopEvent.value++
   }
 
   function shuffle(array) {
@@ -53,6 +55,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     recipes,
     currentIndex,
     likedRecipes,
+    loopEvent,
     setRecipes,
     likeCurrentRecipe,
     skipCurrentRecipe,

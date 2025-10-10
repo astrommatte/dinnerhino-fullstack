@@ -1,36 +1,42 @@
 <template>
-  <div class="card">
-    <h2>Skapa nytt recept</h2>
+  <div class="form-wrapper">
+    <div class="card">
+      <h2>Skapa nytt recept</h2>
 
-    <div class="p-fluid">
-      <!-- Receptinfo -->
-      <div class="field">
-        <label for="name">Namn</label>
-        <InputText v-model="recipe.name" id="name" />
+      <div class="p-fluid">
+        <!-- Receptinfo -->
+        <div class="field">
+          <label for="name">Namn</label>
+          <InputText v-model="recipe.name" id="name" />
+        </div>
+
+        <div class="field">
+          <label for="description">Beskrivning</label>
+          <Textarea v-model="recipe.description" id="description" rows="3" />
+        </div>
+
+        <div class="field">
+          <label for="servings">Portioner</label>
+          <InputNumber v-model="recipe.servings" id="servings" />
+        </div>
+
+        <!-- Ingredienser -->
+        <h3>Ingredienser</h3>
+        <div
+          v-if="showIngredientForm"
+          v-for="(ingredient, index) in recipe.ingredients"
+          :key="index"
+          class="p-inputgroup mb-2"
+        >
+          <InputText v-model="ingredient.name" placeholder="Namn" />
+          <InputText v-model="ingredient.quantity" placeholder="Mängd" />
+          <Button icon="pi pi-times-circle" severity="danger" @click="removeIngredient(index)" />
+        </div>
+        <Button label="Lägg till ingrediens" class="mt-2" @click="addIngredient" />
+
+        <!-- Skapa-knapp -->
+        <Button label="Spara recept" class="mt-4" @click="submitRecipe" />
       </div>
-
-      <div class="field">
-        <label for="description">Beskrivning</label>
-        <Textarea v-model="recipe.description" id="description" rows="3" />
-      </div>
-
-      <div class="field">
-        <label for="servings">Portioner</label>
-        <InputNumber v-model="recipe.servings" id="servings" />
-      </div>
-
-      <!-- Ingredienser -->
-      <h3>Ingredienser</h3>
-      <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="p-inputgroup">
-        <InputText v-model="ingredient.name" placeholder="Namn" />
-        <InputText v-model="ingredient.quantity" placeholder="Mängd" />
-        <Button icon="pi pi-times" severity="danger" @click="removeIngredient(index)" />
-      </div>
-
-      <Button label="Lägg till ingrediens" class="mt-2" @click="addIngredient" />
-
-      <!-- Skapa-knapp -->
-      <Button label="Spara recept" class="mt-4" @click="submitRecipe" />
     </div>
   </div>
 </template>
@@ -45,6 +51,7 @@ import axios from 'axios'
 import { useToaster } from '@/stores/useToastStore'
 
 const { showSuccessToast, showErrorToast } = useToaster()
+const showIngredientForm = ref(false)
 
 const props = defineProps({
   existingRecipe: {
@@ -58,7 +65,7 @@ const resetForm = () => {
     name: '',
     description: '',
     servings: 1,
-    ingredients: [{ name: '', quantity: '' }]
+    ingredients: []
   }
 }
 
@@ -85,6 +92,7 @@ watch(() => props.existingRecipe, (newVal) => {
 
 const addIngredient = () => {
   recipe.value.ingredients.push({ name: '', quantity: '' })
+  showIngredientForm.value = true
 }
 
 const removeIngredient = (index) => {
@@ -113,3 +121,41 @@ const submitRecipe = async () => {
   }
 }
 </script>
+
+<style>
+  .form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9; /* Valfritt bakgrundsfärg */
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 600px; /* Eller vad som passar */
+    padding: 2rem;
+    
+  }
+
+  .field label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  h2, h3 {
+    margin-bottom: 1rem;
+  }
+
+  .p-inputgroup{
+    margin-bottom: 1rem;
+  }
+
+  .p-inputgroup button{
+    width: 15px;
+    height: 10px;
+    margin: 5px;
+  }
+</style>

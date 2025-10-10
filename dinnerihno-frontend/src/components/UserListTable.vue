@@ -9,6 +9,13 @@
     <Column field="firstName" header="Förnamn" />
     <Column field="lastName" header="Efternamn" />
     <Column field="email" header="E-post" />
+    
+    <Column header="Active">
+      <template #body="slotProps">
+        <span v-if="slotProps.data.active !== false" class="pi pi-thumbs-up" @click="$emit('edit-user-toggle-active', slotProps.data)"></span>
+        <span v-else class="pi pi-exclamation-triangle" @click="$emit('edit-user-toggle-active', slotProps.data)"></span>
+      </template>
+    </Column>
 
     <Column header="Redigera">
       <template #body="slotProps">
@@ -40,7 +47,7 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 
 // Emits
-defineEmits(['edit-user', 'delete-user'])
+defineEmits(['edit-user', 'delete-user', 'edit-user-toggle-active'])
 
 const userStore = useUserListStore()
 

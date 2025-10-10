@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRecipeStore } from '../stores/useRecipeStore'
 import { useShoppingListStore } from '@/stores/useShoppingListStore'
 import { useToaster } from '@/stores/useToastStore'
@@ -65,6 +65,21 @@ const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
 const recipeOwnerEmail = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByEmail)
 const infoModal = ref(false)
+
+// Visa feedback till användaren när de gått igenom alla recept
+// Reagera varje gång recepten startar om
+watch(() => recipeStore.loopEvent, () => {
+  // Visa feedback – du kan byta till toast, modal etc.
+  alert('Du har gått igenom alla recept! De blandas nu om.')
+
+  // Exempel med PrimeVue toast:
+  // toast.add({
+  //   severity: 'info',
+  //   summary: 'Receptlistan börjar om',
+  //   detail: 'Alla recept är visade. Nu visas en ny slumpad ordning.',
+  //   life: 3000
+  // })
+})
 
 const toggleAtHome = (ingredient) => {
   ingredient.isAlreadyAtHome = !ingredient.isAlreadyAtHome

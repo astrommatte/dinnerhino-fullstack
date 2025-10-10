@@ -72,6 +72,17 @@ public class UserService {
         return dtoMapper.toUserDto(saved);
     }
 
+    public UserDTO updateUserActive(Long id, CreateUserDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setActive(dto.isActive());
+
+        User saved = userRepository.save(user);
+
+        return dtoMapper.toUserDto(saved);
+    }
+
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found");
