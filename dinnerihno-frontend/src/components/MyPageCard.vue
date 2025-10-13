@@ -42,7 +42,7 @@ import { FloatLabel } from 'primevue'
 import { useToaster } from '@/stores/useToastStore'
 import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
-const { showInfoToast, showSuccessToast, showErrorToast } = useToaster()
+const { showSuccessToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const authStore = useAuthStore()
 const currentUser = computed(() => authStore.user)

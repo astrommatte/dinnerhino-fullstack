@@ -3,6 +3,7 @@
     <span class="arrow left">⬅</span>
     <span class="arrow right">➡</span>
   </div>
+  <h4 class="title-text">Totalt antal recept: {{ totalAmountOfrecipes }}</h4>
   <div
     class="swipe-card"
     v-if="currentRecipe"
@@ -11,7 +12,7 @@
     @touchend="endSwipe"
   >
     <div class="card">
-      <h3>{{ currentRecipe.name }}</h3>
+      <h3 class="title-text">{{ currentRecipe.name }}</h3>
       <p>{{ currentRecipe.description }}</p>
       <p><strong>Portioner:</strong> {{ currentRecipe.servings }}</p>
 
@@ -67,6 +68,7 @@ const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
+const totalAmountOfrecipes = computed(() => recipeStore.recipes.length)
 const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByUsername)
 const infoModal = ref(false)
 

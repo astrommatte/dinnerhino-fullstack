@@ -1,27 +1,27 @@
 <template>
   <div class="form-wrapper">
     <div class="card">
-      <h2>Skapa nytt recept</h2>
+      <h2 class="title-text">Skapa nytt recept</h2>
 
       <div class="p-fluid">
         <!-- Receptinfo -->
         <div class="field">
-          <label for="name">Namn</label>
-          <InputText v-model="recipe.name" id="name" />
+          <label for="name"></label>
+          <InputText v-model="recipe.name" id="name" placeholder="Namn" />
         </div>
 
         <div class="field">
-          <label for="description">Beskrivning</label>
-          <Textarea v-model="recipe.description" id="description" rows="3" />
+          <label for="description"></label>
+          <Textarea v-model="recipe.description" id="description" rows="3" placeholder="Beskrivning.." />
         </div>
 
         <div class="field">
-          <label for="servings">Portioner</label>
-          <InputNumber v-model="recipe.servings" id="servings" />
+          <label for="servings"></label>
+          <InputNumber v-model="recipe.servings" id="servings" placeholder="Antal portioner" />
         </div>
 
         <!-- Ingredienser -->
-        <h3>Ingredienser</h3>
+        <h3 class="title-text">Ingredienser</h3>
         <div
           v-if="showIngredientForm"
           v-for="(ingredient, index) in recipe.ingredients"
@@ -134,9 +134,6 @@ const submitRecipe = async () => {
 
   .card {
     width: 100%;
-    max-width: 600px; /* Eller vad som passar */
-    padding: 2rem;
-    
   }
 
   .field label {
@@ -157,4 +154,6 @@ const submitRecipe = async () => {
     height: 10px;
     margin: 5px;
   }
+
+
 </style>

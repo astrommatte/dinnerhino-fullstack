@@ -2,13 +2,12 @@
   <h2 class="title-text">Mina Recept</h2>
   <div class="card">
     
-
     <!-- Knapp som visar / döljer formuläret -->
-    <Button 
+    <Button
+      class="cancel-create-buttons"
       :label="showCreateForm ? 'Avbryt' : 'Skapa nytt recept'" 
       @click="toggleForm" 
     />
-
 
     <!-- Formuläret visas när showCreateForm är true -->
     <RecipeForm
@@ -134,25 +133,27 @@ const onRecipeSaved = () => {
 </script>
 
 <style scoped>
+  .cancel-create-buttons{
+    width: 100%;
+  }
 
+  .recipe-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
 
-.recipe-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
+  .recipe-list li {
+    margin: 0.5rem 0;
+  }
 
-.recipe-list li {
-  margin: 0.5rem 0;
-}
+  .recipe-name {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
 
-.recipe-name {
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.recipe-name:hover {
-  color: #1d5bbf;
-}
+  .recipe-name:hover {
+    color: #1d5bbf;
+  }
 </style>
 
