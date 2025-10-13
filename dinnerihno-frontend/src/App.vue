@@ -1,11 +1,4 @@
 <template>
-  <template>
-  <div class="test-box p-4">
-    <h1>Testtext</h1>
-    <p>Detta är ett test för att se dark mode.</p>
-    <Button label="Testknapp" />
-  </div>
-</template>
   <Navbar v-if="!isLoginPage" />
   <Toast position="top-center" />
   <router-view />
