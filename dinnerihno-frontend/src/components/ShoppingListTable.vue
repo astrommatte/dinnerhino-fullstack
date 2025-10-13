@@ -114,19 +114,20 @@ watch(
 
 .shopping-list li {
   padding: 0.5rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--surface-border);
+  background-color: var(--surface-card);
   cursor: pointer;
   user-select: none;
 
 }
 
 .shopping-list li:hover {
-  background: #f5f5f5;
+  background-color: var(--surface-hover);
 }
 
 .completed {
   text-decoration: line-through;
-  color: gray;
+  color: var(--text-secondary-color);
   opacity: 0.7;
 }
 </style>

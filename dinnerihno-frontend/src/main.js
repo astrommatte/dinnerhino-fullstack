@@ -63,9 +63,7 @@ app.directive('tooltip', Tooltip);
 
 app.mount('#app')
 
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  const newPrefersDark = e.matches
-  // Här kan du antingen reloada sidan eller byta tema dynamiskt.
-  // PrimeVue tema-preset är satt vid app-start, så enklast är att reloada sidan:
-  window.location.reload()
-})
+// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+//   const newPrefersDark = e.matches
+//   window.location.reload()
+// })
