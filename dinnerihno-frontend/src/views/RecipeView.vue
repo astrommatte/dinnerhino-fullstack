@@ -17,7 +17,7 @@ import { useRecipeStore } from '../stores/useRecipeStore'
 import { useToaster } from '@/stores/useToastStore'
 import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
-const { showErrorToast } = useToaster()
+const { showErrorToast, showInfoToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 
@@ -25,6 +25,7 @@ const hasRecipes = computed(() => recipeStore.recipes.length > 0)
 
 const fetchRecipes = async () => {
   showLoading()
+  showInfoToast('Här ser du alla recept som finns, swipea på!')
   try {
     const res = await axios.get(`${apiUrl}/api/recipes`, {
       headers: { Authorization: localStorage.getItem('auth') }

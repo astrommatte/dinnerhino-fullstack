@@ -74,7 +74,7 @@ const toggleForm = () => {
 
 const fetchRecipes = async () => {
   showLoading()
-  showInfoToast('Hämtar dina personliga recept som du kan uppdatera/ta bort')
+  showInfoToast('Här finns dina personliga recept som du kan uppdatera/ta bort')
   try {
     const res = await axios.get(`${apiUrl}/api/recipes/my`, {
       headers: { Authorization: localStorage.getItem('auth') }

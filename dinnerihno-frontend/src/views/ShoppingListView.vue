@@ -25,8 +25,8 @@ const { showInfoToast, showErrorToast, showSuccessToast } = useToaster()
 const hasShoppingList = computed(() => shoppingListStore.ingredients.length > 0)
 
 const fetchShoppingList = async () => {
-  showInfoToast('Hämtar handlingslistan..')
   showLoading()
+  showInfoToast('Här är handlingslistan!')
   try {
     const res = await axios.get(`${apiUrl}/api/shopping-list`, {
       headers: { Authorization: localStorage.getItem('auth') }
