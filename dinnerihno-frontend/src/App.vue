@@ -27,13 +27,14 @@ onMounted(() => {
 </script>
 
 <style>
+
   .overlay-spinner {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--overlay-light);
+    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,8 +46,9 @@ onMounted(() => {
   }
 
   @media (prefers-color-scheme: dark) {
-  .overlay {
-    background-color: var(--overlay-dark);
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
   }
-}
+
 </style>
