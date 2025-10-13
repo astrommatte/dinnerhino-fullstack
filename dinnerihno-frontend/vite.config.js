@@ -14,7 +14,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       manifest: {
         name: 'Vad ska vi äta idag?',
-        short_name: 'Matrecept',
+        short_name: 'Dinnerhino',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',

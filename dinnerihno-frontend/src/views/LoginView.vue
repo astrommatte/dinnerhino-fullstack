@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <div class="p-fluid">
       <h2>{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</h2>
 
       <div class="field">
@@ -55,7 +54,6 @@
           {{ isRegistering ? 'Har du redan ett konto?' : 'Skapa ny användare' }}
         </Button>
       </div>
-    </div>
   </div>
 </template>
 
@@ -132,11 +130,13 @@ const handleSubmit = async () => {
 <style scoped>
 .card {
   max-width: 400px;
+  width: 90%;
   margin: 2rem auto;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px #ccc;
 }
+
 
 .p-fluid {
   justify-content: center;
@@ -144,24 +144,34 @@ const handleSubmit = async () => {
   text-align: center;
 }
 
-input {
-  min-width: 234px;
-}
-
 .field {
   margin-bottom: 1rem;
-  display: flex;
-  justify-content: center;
+  width: 100%;
+}
+
+.p-inputtext,
+.p-password,
+.p-float-label,
+input,
+.p-component {
+  width: 100%;
+}
+
+.p-password,
+.p-password-input {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login-view-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-left: 50px;
-  margin-right: 50px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 button {
-  font-size: 12px;
+  width: 100%;
+  font-size: 14px;
 }
+
 </style>
