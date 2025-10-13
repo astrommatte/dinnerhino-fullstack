@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (values) => {
   try {
-    const authHeader = 'Basic ' + btoa(`${values.email}:${values.password}`)
+    const authHeader = 'Basic ' + btoa(`${values.username}:${values.password}`)
 
     const meRes = await axios.get(`${apiUrl}/api/auth/me`, {
       headers: { Authorization: authHeader }

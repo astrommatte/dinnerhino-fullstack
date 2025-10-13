@@ -4,9 +4,11 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import './assets/main.css'
+import 'primeicons/primeicons.css'
 
 import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
+import Aura from '@primeuix/themes/aura'
+
 import Button from 'primevue/button'; // Example component
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
@@ -25,17 +27,20 @@ import Menubar from 'primevue/menubar';
 import Popover from 'primevue/popover'
 import { Card } from 'primevue'
 
-import 'primeicons/primeicons.css'
-
+const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
 app.use(PrimeVue, {
-    theme: {
-        preset: Aura
+  theme: {
+    preset: Aura,
+    options: {
+      darkModeSelector: 'system'  // eller klass, beroende på setup
     }
-});
+  }
+})
 app.use(ConfirmationService)
 app.use(ToastService);
 
@@ -57,3 +62,10 @@ app.component('Card', Card)
 app.directive('tooltip', Tooltip);
 
 app.mount('#app')
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  const newPrefersDark = e.matches
+  // Här kan du antingen reloada sidan eller byta tema dynamiskt.
+  // PrimeVue tema-preset är satt vid app-start, så enklast är att reloada sidan:
+  window.location.reload()
+})

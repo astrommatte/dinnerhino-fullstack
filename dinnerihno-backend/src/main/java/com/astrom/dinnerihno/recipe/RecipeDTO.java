@@ -20,6 +20,6 @@ public class RecipeDTO {
     private String description;
     private int servings;
     private Long createdById;
-    private String createdByEmail;
+    private String createdByUsername;
     private List<IngredientDTO> ingredients = new ArrayList<>();
 }

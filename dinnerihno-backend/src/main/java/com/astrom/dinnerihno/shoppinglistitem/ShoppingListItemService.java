@@ -37,8 +37,8 @@ public class ShoppingListItemService {
         }
     }
 
-    public List<ShoppingListItemDTO> getShoppingListDto(String email) {
-        User user = userRepository.findByEmail(email)
+    public List<ShoppingListItemDTO> getShoppingListDto(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return shoppingListRepository.findByUser(user).stream()
@@ -46,22 +46,22 @@ public class ShoppingListItemService {
                 .toList();
     }
 
-    public void removeShoppingListItem(Long itemId, String email) {
+    public void removeShoppingListItem(Long itemId, String username) {
         ShoppingListItem item = shoppingListRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-        if (!item.getUser().getEmail().equals(email)) {
+        if (!item.getUser().getUsername().equals(username)) {
             throw new RuntimeException("You can only delete your own items");
         }
 
         shoppingListRepository.delete(item);
     }
 
-    public ShoppingListItemDTO updateItem(Long itemId, ShoppingListItemCreateDTO dto, String email) {
+    public ShoppingListItemDTO updateItem(Long itemId, ShoppingListItemCreateDTO dto, String username) {
         ShoppingListItem item = shoppingListRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-        if (!item.getUser().getEmail().equals(email)) {
+        if (!item.getUser().getUsername().equals(username)) {
             throw new RuntimeException("You can only update your own items");
         }
 
@@ -73,8 +73,8 @@ public class ShoppingListItemService {
         return dtoMapper.toShoppingListItemDto(item);
     }
 
-    public void clearShoppingList(String email) {
-        List<ShoppingListItem> items = shoppingListRepository.findByUserEmail(email);
+    public void clearShoppingList(String username) {
+        List<ShoppingListItem> items = shoppingListRepository.findByUserUsername(username);
         shoppingListRepository.deleteAll(items);
     }
 }

@@ -25,7 +25,7 @@ public class DtoMapper {
 
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
+        dto.setUsername(user.getUsername());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setRole(user.getRole() != null ? UserRole.valueOf(user.getRole().name()) : null);
@@ -62,7 +62,7 @@ public class DtoMapper {
         dto.setDescription(recipe.getDescription());
         dto.setServings(recipe.getServings());
         dto.setCreatedById(recipe.getCreatedBy().getId());
-        dto.setCreatedByEmail(recipe.getCreatedBy().getEmail());
+        dto.setCreatedByUsername(recipe.getCreatedBy().getUsername());
 
         dto.setIngredients(recipe.getIngredients().stream()
                 .map(this::toIngredientDto)

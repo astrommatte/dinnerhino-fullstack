@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ShoppingListItemRepository extends JpaRepository<ShoppingListItem, Long> {
-    List<ShoppingListItem> findByUserEmail(String email);
+    List<ShoppingListItem> findByUserUsername(String name);
     List<ShoppingListItem> findByUser(User user);
 }

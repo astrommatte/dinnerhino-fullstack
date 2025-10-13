@@ -8,9 +8,9 @@
 
     <Column field="firstName" header="Förnamn" />
     <Column field="lastName" header="Efternamn" />
-    <Column field="email" header="E-post" />
+    <Column field="username" header="Användarnamn" />
     
-    <Column header="Active">
+    <Column header="Aktiv">
       <template #body="slotProps">
         <span v-if="slotProps.data.active !== false" class="pi pi-thumbs-up" @click="$emit('edit-user-toggle-active', slotProps.data)"></span>
         <span v-else class="pi pi-exclamation-triangle" @click="$emit('edit-user-toggle-active', slotProps.data)"></span>

@@ -1,4 +1,8 @@
 <template>
+  <div class="swipe-hint">
+    <span class="arrow left">⬅</span>
+    <span class="arrow right">➡</span>
+  </div>
   <div
     class="swipe-card"
     v-if="currentRecipe"
@@ -29,7 +33,7 @@
     </div>
     <Popover v-if="infoModal"/>
 
-    <h4>Recept skapad av: {{ recipeOwnerEmail }}</h4>
+    <h4>Recept skapad av: {{ recipeOwnerUsername }}</h4>
   </div>
   
   <div class="reset-and-submit-buttons">
@@ -63,22 +67,13 @@ const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
 const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
-const recipeOwnerEmail = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByEmail)
+const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByUsername)
 const infoModal = ref(false)
 
 // Visa feedback till användaren när de gått igenom alla recept
 // Reagera varje gång recepten startar om
 watch(() => recipeStore.loopEvent, () => {
-  // Visa feedback – du kan byta till toast, modal etc.
-  alert('Du har gått igenom alla recept! De blandas nu om.')
-
-  // Exempel med PrimeVue toast:
-  // toast.add({
-  //   severity: 'info',
-  //   summary: 'Receptlistan börjar om',
-  //   detail: 'Alla recept är visade. Nu visas en ny slumpad ordning.',
-  //   life: 3000
-  // })
+  showInfoToast('Finns inga fler recept, så nu börjar listan om, när du är klar tryck på "klar"')
 })
 
 const toggleAtHome = (ingredient) => {
@@ -96,11 +91,11 @@ const endSwipe = (e) => {
   const diff = endX - startX
 
   if (diff > 50) {
-    recipeStore.skipCurrentRecipe()
     showSuccessToast('Hoppar över recept!')
+    recipeStore.skipCurrentRecipe()
   } else if (diff < -50) {
-    recipeStore.likeCurrentRecipe()
     showSuccessToast('Recept inlagt i handlingslista!')
+    recipeStore.likeCurrentRecipe()
   }
 }
 
@@ -110,8 +105,8 @@ const moveSwipe = (e) => {
 
 // Starta om swipen från början
 const reset = () => {
-  recipeStore.reset()
   showInfoToast('Börjar om och nollställer listan!')
+  recipeStore.reset()
 }
 
 // Skicka gillade recept till inköpslista (exempel)
@@ -164,7 +159,8 @@ const openInfoModal = (() => {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
-  background: #fff;
+  background-color: var(--surface-card);
+  color: var(--text-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -187,6 +183,36 @@ const openInfoModal = (() => {
   display: flex;
   margin: auto;
   justify-content: space-between;
+}
+.swipe-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+}
+
+.arrow {
+  font-size: 2rem;
+  color: #999;
+  animation: bounce 1.2s infinite;
+}
+
+.arrow.left {
+  animation-direction: alternate-reverse;
+}
+
+@keyframes bounce {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+
+@media (min-width: 900px) {
+  /* Dölj pilarna på större skärmar om swipe-knappar används */
+  .swipe-hint {
+    display: none;
+  }
 }
 
 @media (max-width: 900px) {

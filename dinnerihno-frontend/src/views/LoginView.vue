@@ -5,9 +5,9 @@
 
       <div class="field">
         <FloatLabel variant="on">
-          <label for="email">Email</label>
+          <label for="username">Användarnamn</label>
           <InputText
-            v-model="email"     
+            v-model="username"     
           />
         </FloatLabel>
       </div>
@@ -77,7 +77,7 @@ const authStore = useAuthStore()
 
 const firstName = ref('')
 const lastName = ref('')
-const email = ref('')
+const username = ref('')
 const password = ref('')
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -90,7 +90,7 @@ const toggleMode = () => {
 const resetFields = () => {
   firstName.value = ''
   lastName.value = ''
-  email.value = ''
+  username.value = ''
   password.value = ''
 }
 
@@ -101,7 +101,7 @@ const handleSubmit = async () => {
       await axios.post(`${apiUrl}/api/users/create`, {
         firstName: firstName.value,
         lastName: lastName.value,
-        email: email.value,
+        username: username.value,
         password: password.value
       })
       resetFields()
@@ -116,7 +116,7 @@ const handleSubmit = async () => {
     try {
       showLoading()
       await authStore.login({
-        email: email.value,
+        username: username.value,
         password: password.value
       })
 

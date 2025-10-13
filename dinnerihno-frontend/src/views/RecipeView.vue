@@ -15,6 +15,7 @@ import axios from 'axios'
 import SwipeCard from '../components/SwipeCard.vue'
 import { useRecipeStore } from '../stores/useRecipeStore'
 import { useToaster } from '@/stores/useToastStore'
+import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
 const { showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -23,6 +24,7 @@ const recipeStore = useRecipeStore()
 const hasRecipes = computed(() => recipeStore.recipes.length > 0)
 
 const fetchRecipes = async () => {
+  showLoading()
   try {
     const res = await axios.get(`${apiUrl}/api/recipes`, {
       headers: { Authorization: localStorage.getItem('auth') }
@@ -30,6 +32,8 @@ const fetchRecipes = async () => {
     recipeStore.setRecipes(res.data)
   } catch (err) {
     showErrorToast('Kunde inte hämta recept')
+  } finally {
+    hideLoading()
   }
 }
 

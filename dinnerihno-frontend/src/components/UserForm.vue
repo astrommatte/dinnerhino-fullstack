@@ -12,7 +12,7 @@
 
       <InputText id="lastName" v-model="user.lastName" placeholder="Efternamn" />
 
-      <InputText id="email" v-model="user.email" placeholder="Email" />
+      <InputText id="username" v-model="user.username" placeholder="Användarnamn" />
 
       <Password id="password" v-model="user.password" toggleMask placeholder="Lösenord" />
 
@@ -52,7 +52,7 @@ const user = reactive({
   id: null,
   firstName: '',
   lastName: '',
-  email: '',
+  username: '',
   password: '',
   isActive: false
 })

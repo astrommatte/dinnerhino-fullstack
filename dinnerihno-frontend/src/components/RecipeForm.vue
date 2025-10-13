@@ -49,6 +49,7 @@ import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import axios from 'axios'
 import { useToaster } from '@/stores/useToastStore'
+import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 
 const { showSuccessToast, showErrorToast } = useToaster()
 const showIngredientForm = ref(false)
@@ -101,6 +102,7 @@ const removeIngredient = (index) => {
 
 const submitRecipe = async () => {
   try {
+    showLoading()
     const headers = { Authorization: localStorage.getItem('auth') }
 
     if (props.existingRecipe && props.existingRecipe.id) {
@@ -118,16 +120,14 @@ const submitRecipe = async () => {
     resetForm()
   } catch (error) {
     showErrorToast('Något gick fel vid sparandet av recept.')
+  } finally {
+    hideLoading()
   }
 }
 </script>
 
 <style>
   .form-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f9f9; /* Valfritt bakgrundsfärg */
     padding: 1rem;
     box-sizing: border-box;
   }
@@ -142,7 +142,6 @@ const submitRecipe = async () => {
   .field label {
     font-weight: 600;
     margin-bottom: 0.5rem;
-    display: block;
   }
 
   h2, h3 {

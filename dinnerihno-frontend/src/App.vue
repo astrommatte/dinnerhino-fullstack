@@ -1,4 +1,11 @@
 <template>
+  <template>
+  <div class="test-box p-4">
+    <h1>Testtext</h1>
+    <p>Detta är ett test för att se dark mode.</p>
+    <Button label="Testknapp" />
+  </div>
+</template>
   <Navbar v-if="!isLoginPage" />
   <Toast position="top-center" />
   <router-view />
@@ -44,5 +51,13 @@ onMounted(() => {
   .p-toast{
     max-width: 300px;
   }
+
+  .p-button{
+    margin: 5px;
+  }
+  .test-box {
+  background-color: var(--surface-card);
+  color: var(--text-color);
+}
 
 </style>

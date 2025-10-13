@@ -25,14 +25,14 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String email = authentication.getName();  // Basic Auth username (email)
+        String username = authentication.getName();  // Basic Auth username
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserDTO userDto = new UserDTO();
         userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
+        userDto.setUsername(user.getUsername());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setRole(user.getRole());

@@ -16,10 +16,10 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
 
-    public RecipeDTO createRecipe(RecipeCreateDTO dto, String email) {
+    public RecipeDTO createRecipe(RecipeCreateDTO dto, String username) {
         // hämta användaren från DB baserat på inloggad email
-        User createdBy = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + email));
+        User createdBy = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 
         // konvertera till entity
         Recipe recipe = dtoMapper.toRecipeEntity(dto, createdBy);
@@ -37,8 +37,8 @@ public class RecipeService {
                 .toList();
     }
 
-    public List<RecipeDTO> getUserRecipes(String email) {
-        User user = userRepository.findByEmail(email)
+    public List<RecipeDTO> getUserRecipes(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return recipeRepository.findByCreatedBy(user).stream()
@@ -46,11 +46,11 @@ public class RecipeService {
                 .toList();
     }
 
-    public RecipeDTO updateRecipe(Long recipeId, RecipeCreateDTO dto, String email) {
+    public RecipeDTO updateRecipe(Long recipeId, RecipeCreateDTO dto, String username) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
-        if (!recipe.getCreatedBy().getEmail().equals(email)) {
+        if (!recipe.getCreatedBy().getUsername().equals(username)) {
             throw new RuntimeException("You can only update your own recipes");
         }
 
@@ -67,11 +67,11 @@ public class RecipeService {
         return dtoMapper.toRecipeDto(saved);
     }
 
-    public void deleteRecipe(Long recipeId, String email) {
+    public void deleteRecipe(Long recipeId, String username) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
-        if (!recipe.getCreatedBy().getEmail().equals(email)) {
+        if (!recipe.getCreatedBy().getUsername().equals(username)) {
             throw new RuntimeException("You can only delete your own recipes");
         }
 

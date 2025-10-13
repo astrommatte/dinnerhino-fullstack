@@ -16,8 +16,8 @@
 
     <div class="field">
       <FloatLabel variant="on">
-        <label for="email">E-post</label>
-        <InputText id="email" v-model="user.email" />
+        <label for="username">Användarnamn</label>
+        <InputText id="username" v-model="user.username" />
       </FloatLabel>
     </div>
 
@@ -39,7 +39,10 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { FloatLabel } from 'primevue'
+import { useToaster } from '@/stores/useToastStore'
+import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
+const { showInfoToast, showSuccessToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const authStore = useAuthStore()
 const currentUser = computed(() => authStore.user)
@@ -48,7 +51,7 @@ const currentUser = computed(() => authStore.user)
 const user = ref({
   firstName: '',
   lastName: '',
-  email: '',
+  username: '',
   password: ''
 })
 
@@ -57,7 +60,7 @@ onMounted(() => {
   if (currentUser.value) {
     user.value.firstName = currentUser.value.firstName
     user.value.lastName = currentUser.value.lastName
-    user.value.email = currentUser.value.email
+    user.value.username = currentUser.value.username
   }
 })
 
@@ -69,7 +72,7 @@ const updateUser = async () => {
   const payload = {
     firstName: user.value.firstName,
     lastName: user.value.lastName,
-    email: user.value.email
+    username: user.value.username
   }
 
   if (user.value.password && user.value.password.length > 0) {
@@ -77,13 +80,15 @@ const updateUser = async () => {
   }
 
   try {
+    showLoading()
     const response = await axios.put(`${apiUrl}/api/users/my-page/${currentUser.value.id}`, payload, { headers })
-    alert('Användare uppdaterad!')
+    showSuccessToast('Din profil är uppdaterad!')
     authStore.setUser(response.data) // Om du har en metod i din store
     user.value.password = '' // Töm lösenordet lokalt efter update
   } catch (error) {
-    console.error(error)
-    alert('Misslyckades att uppdatera användaren.')
+    showErrorToast('Gick inte att uppdatera')
+  } finally {
+    hideLoading()
   }
 }
 </script>

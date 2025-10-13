@@ -54,7 +54,10 @@ import Button from 'primevue/button'
 
 // Importera ditt formulär som komponent
 import RecipeForm from '@/components/RecipeForm.vue'
+import { useToaster } from '@/stores/useToastStore'
+import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
+const { showSuccessToast, showInfoToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 const recipes = ref([])
@@ -70,10 +73,20 @@ const toggleForm = () => {
 }
 
 const fetchRecipes = async () => {
-  const res = await axios.get(`${apiUrl}/api/recipes/my`, {
-    headers: { Authorization: localStorage.getItem('auth') }
-  })
+  showLoading()
+  showInfoToast('Hämtar dina personliga recept som du kan uppdatera/ta bort')
+  try {
+    const res = await axios.get(`${apiUrl}/api/recipes/my`, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
   recipes.value = res.data
+  }catch(err) {
+    showErrorToast('Gick inte att hämta recept')
+  } finally {
+    showSuccessToast('Recept hämtade!')
+    hideLoading()
+  }
+
 }
 
 onMounted(()=> {
@@ -121,13 +134,7 @@ const onRecipeSaved = () => {
 </script>
 
 <style scoped>
-.card {
-  max-width: auto;
-  margin: 2rem auto;
-  padding: 2rem;
-  /* border-radius: 8px;
-  box-shadow: 0 0 10px #ccc; */
-}
+
 
 .recipe-list {
   list-style: none;

@@ -21,8 +21,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
 
-    @Value("${app.admin-email}")
-    private String adminEmail;
+    @Value("${app.admin-username}")
+    private String adminUsername;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Transactional
@@ -30,11 +30,11 @@ public class UserService {
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setActive(false);
 
-        if (adminEmail.equalsIgnoreCase(dto.getEmail())) {
+        if (adminUsername.equalsIgnoreCase(dto.getUsername())) {
             user.setRole(UserRole.ADMIN);
             user.setActive(true);
         } else {
@@ -61,7 +61,7 @@ public class UserService {
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
         user.setActive(dto.isActive());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -100,25 +100,25 @@ public class UserService {
 
 
     //Till "mina sidor" för användaren som är inloggad.
-    public UserDTO getUser(String email) {
-        User user = userRepository.findByEmail(email)
+    public UserDTO getUser(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return dtoMapper.toUserDto(user);
     }
 
     //Till "mina sidor" för användaren som är inloggad.
-    public UserDTO updatePersonalUser(Long userId, CreateUserDTO dto, String email) {
+    public UserDTO updatePersonalUser(Long userId, CreateUserDTO dto, String username) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
-        if (!user.getEmail().equals(email)) {
+        if (!user.getUsername().equals(username)) {
             throw new RuntimeException("You can only update your own user");
         }
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
@@ -150,8 +150,8 @@ public class UserService {
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName(); // Användarnamn är email i ditt fall
-        return userRepository.findByEmail(email)
+        String username = authentication.getName(); // Användarnamn är username i ditt fall
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Logged-in user not found"));
     }
 }

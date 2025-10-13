@@ -53,7 +53,6 @@ const deleteShoppingList = async () => {
     showSuccessToast('Handlingslistan borttagen')
 
   } catch (err) {
-    console.error(err)
     showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
   } finally {
     shoppingListStore.setShoppingList([])

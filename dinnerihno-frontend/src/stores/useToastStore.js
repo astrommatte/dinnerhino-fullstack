@@ -26,7 +26,7 @@ export function useToaster() {
         severity: 'info',
         summary: 'Info',
         detail: msg,
-        life: 3000,
+        life: 5000,
       })
   }
 
