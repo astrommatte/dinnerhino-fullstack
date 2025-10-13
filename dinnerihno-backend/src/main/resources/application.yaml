@@ -22,7 +22,7 @@ spring:
     show-sql: true
 
 app:
-  admin-email: ${ADMIN_USERNAME}
+  admin-username: ${ADMIN_USERNAME}
 
 logging:
   level:
