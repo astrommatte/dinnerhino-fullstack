@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-      <h2>{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</h2>
+      <h2 class="title-text">{{ isRegistering ? 'Skapa konto' : 'Logga in' }}</h2>
 
       <div class="field">
         <FloatLabel variant="on">
@@ -137,26 +137,12 @@ const handleSubmit = async () => {
   box-shadow: 0 0 10px #ccc;
 }
 
-
-.p-fluid {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
 .field {
   margin-bottom: 1rem;
   width: 100%;
 }
 
 .p-inputtext,
-.p-password,
-.p-float-label,
-input,
-.p-component {
-  width: 100%;
-}
-
 .p-password,
 .p-password-input {
   display: grid;
@@ -169,9 +155,10 @@ input,
   margin-top: 1rem;
 }
 
-button {
+.p-button {
   width: 100%;
   font-size: 14px;
+  margin-top: 5px;
 }
 
 </style>

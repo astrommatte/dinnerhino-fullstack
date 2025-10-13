@@ -84,7 +84,3 @@ function save() {
   emit('update:modelValue', false)
 }
 </script>
-
-<style scoped>
-/* Lägg till valfri styling */
-</style>

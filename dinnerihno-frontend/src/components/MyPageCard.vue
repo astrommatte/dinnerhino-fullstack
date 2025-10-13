@@ -105,4 +105,17 @@ const updateUser = async () => {
   display: flex;
   justify-content: center;
 }
+
+.card {
+  display: flex;
+  justify-content: center;
+}
+
+.p-inputtext,
+.p-password,
+.p-password-input {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+}
 </style>

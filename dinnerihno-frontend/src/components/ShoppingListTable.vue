@@ -115,10 +115,8 @@ watch(
 .shopping-list li {
   padding: 0.5rem;
   border-bottom: 1px solid var(--surface-border);
-  background-color: var(--surface-card);
   cursor: pointer;
   user-select: none;
-
 }
 
 .shopping-list li:hover {
