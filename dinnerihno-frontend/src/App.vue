@@ -33,7 +33,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--surface-overlay);
+    background-color: rgba(var(--surface-overlay-rgb), 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
