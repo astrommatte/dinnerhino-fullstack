@@ -33,7 +33,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(var(--surface-overlay-rgb), 0.5);
+    background-color: var(--overlay-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,4 +43,10 @@ onMounted(() => {
   .p-toast{
     max-width: 300px;
   }
+
+  @media (prefers-color-scheme: dark) {
+  .overlay {
+    background-color: var(--overlay-dark);
+  }
+}
 </style>

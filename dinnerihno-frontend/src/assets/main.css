@@ -29,6 +29,18 @@ a,
   z-index: 1101 !important;
 }
 
+:root {
+  /* Light mode */
+  --overlay-light: rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode */
+    --overlay-dark: rgba(255, 255, 255, 0.2);
+  }
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
