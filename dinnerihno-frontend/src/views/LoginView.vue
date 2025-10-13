@@ -141,9 +141,15 @@ const handleSubmit = async () => {
   margin-bottom: 1rem;
   width: 100%;
 }
+.field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
 
 .p-inputtext,
 .p-password,
+.p-component,
 .p-password-input {
   display: grid;
   width: 100%;
@@ -159,6 +165,11 @@ const handleSubmit = async () => {
   width: 100%;
   font-size: 14px;
   margin-top: 5px;
+}
+
+::v-deep(.p-password),
+::v-deep(.p-password-input) {
+  width: 100%;
 }
 
 </style>
