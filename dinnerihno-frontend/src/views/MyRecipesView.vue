@@ -29,7 +29,7 @@
     <Popover ref="op">
       <div v-if="selectedRecipe">
         <h3>{{ selectedRecipe.name }}</h3>
-        <p>{{ selectedRecipe.description }}</p>
+        <p class="recipe-description">{{ selectedRecipe.description }}</p>
         <ul>
           <li v-for="(ing, i) in selectedRecipe.ingredients" :key="i">
             {{ ing.quantity }} {{ ing.unit }} {{ ing.name }}
@@ -136,6 +136,10 @@ const onRecipeSaved = () => {
 </script>
 
 <style scoped>
+  .recipe-description {
+    white-space: pre-wrap; /* 👈 gör så att radbrytningar och flera mellanslag bevaras */
+    word-break: break-word; /* 👈 förhindrar overflow om ord är långa */
+  }
   .cancel-create-buttons{
     width: 100%;
   }

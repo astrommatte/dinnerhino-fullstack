@@ -10,10 +10,24 @@
           <InputText v-model="recipe.name" id="name" placeholder="Namn" />
         </div>
 
-        <div class="field">
-          <label for="description"></label>
-          <Textarea v-model="recipe.description" id="description" rows="3" placeholder="Beskrivning.." />
+        <div class="field textarea-wrapper">
+          <FloatLabel variant="on">
+            <label for="description"></label>
+            <Textarea
+              id="description"
+              v-model="recipe.description"
+              rows="5"
+              maxlength="1000"
+              autoResize
+              placeholder="Beskrivning, max 1000 tecken."
+            />
+          </FloatLabel>
+
+          <span class="char-counter-inside">
+            {{ recipe.description.length }}/1000
+          </span>
         </div>
+
 
         <div class="field">
           <label for="servings"></label>
@@ -42,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
@@ -50,9 +64,12 @@ import Button from 'primevue/button'
 import axios from 'axios'
 import { useToaster } from '@/stores/useToastStore'
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
+import FloatLabel from 'primevue/floatlabel'
 
 const { showSuccessToast, showErrorToast } = useToaster()
 const showIngredientForm = ref(false)
+// Du kan även använda computed om du vill visa "kvar" istället:
+//const remainingChars = computed(() => 1000 - description.value.length)
 
 const props = defineProps({
   existingRecipe: {
@@ -126,7 +143,23 @@ const submitRecipe = async () => {
 }
 </script>
 
-<style>
+<style scoped>
+  .textarea-wrapper {
+    position: relative;
+  }
+
+  .char-counter-inside {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 12px;
+    color: var(--text-secondary, #888);
+    background: var(--surface-card);
+    padding: 0 4px;
+    border-radius: 4px;
+    pointer-events: none; /* så att den inte stör skrivandet */
+  }
+
   .form-wrapper {
     padding: 1rem;
     box-sizing: border-box;
@@ -154,6 +187,4 @@ const submitRecipe = async () => {
     height: 10px;
     margin: 5px;
   }
-
-
 </style>
