@@ -109,6 +109,7 @@ async function deleteRecipe(id) {
         headers: { Authorization: localStorage.getItem('auth') }
       })
       recipes.value = recipes.value.filter(r => r.id !== id)
+      showSuccessToast('Recept borttaget!')
     } catch (err) {
       showErrorToast('Gick inte att ta bort recept')
     } finally {
