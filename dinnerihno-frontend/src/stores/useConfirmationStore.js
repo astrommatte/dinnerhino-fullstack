@@ -58,8 +58,34 @@ const confirm2 = (onAccept, onReject = null) => {
   })
 }
 
+const confirmDeleteUser = (user, onAccept, onReject = null) => {
+  confirm.require({
+    message: `Är du säker på att du vill ta bort? ${user.username}`,
+    header: 'Bekräfta borttagning',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Avbryt',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Ta bort',
+      severity: 'danger'
+    },
+    accept: () => {
+      onAccept?.()
+      showSuccessToast('Nu är det borttaget!')
+    },
+    reject: () => {
+      onReject?.()
+      showErrorToast('Borttagning avbröts.')
+    }
+  })
+}
+
   return {
     confirm1,
-    confirm2
+    confirm2,
+    confirmDeleteUser
   }
 })
