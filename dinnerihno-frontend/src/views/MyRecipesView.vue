@@ -51,12 +51,13 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import Button from 'primevue/button'
 
-// Importera ditt formulär som komponent
+import { useConfirmationStore } from '@/stores/useConfirmationStore'
 import RecipeForm from '@/components/RecipeForm.vue'
 import { useToaster } from '@/stores/useToastStore'
 import { showLoading, hideLoading } from '@/stores/useLoadingStore'
 
 const { showSuccessToast, showInfoToast, showErrorToast } = useToaster()
+const confirmationStore = useConfirmationStore()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 const recipes = ref([])
@@ -92,7 +93,7 @@ onMounted(()=> {
   fetchRecipes()
 })
 
-const showIngredients = (event, recipe) => {
+async function showIngredients(event, recipe) {
   selectedRecipe.value = recipe
   // Access OverlayPanel via template ref
   op.value.toggle(event)
@@ -101,23 +102,24 @@ const showIngredients = (event, recipe) => {
 const op = ref(null)
 
 // Ta bort recept
-const deleteRecipe = async (id) => {
-  if (!confirm('Är du säker på att du vill ta bort receptet?')) return
-
-  try {
-    await axios.delete(`${apiUrl}/api/recipes/${id}`, {
-      headers: { Authorization: localStorage.getItem('auth') }
-    })
-    recipes.value = recipes.value.filter(r => r.id !== id)
-    alert('Recept borttaget')
-  } catch (err) {
-    console.error(err)
-    alert('Kunde inte ta bort receptet')
-  }
+async function deleteRecipe(id) {
+  confirmationStore.confirm2(async () => {
+    try {
+      await axios.delete(`${apiUrl}/api/recipes/${id}`, {
+        headers: { Authorization: localStorage.getItem('auth') }
+      })
+      recipes.value = recipes.value.filter(r => r.id !== id)
+    } catch (err) {
+      showErrorToast('Gick inte att ta bort recept')
+    } finally {
+      op.value?.hide()
+    }
+  })
 }
 
 // Editera recept - du kan navigera till en edit-sida eller visa ett formulär
-const editRecipe = (recipe) => {
+async function editRecipe(recipe) {
+  op.value?.hide()
   selectedRecipe.value = null
   showCreateForm.value = true
   recipeToEdit.value = recipe
