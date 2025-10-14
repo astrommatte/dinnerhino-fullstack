@@ -1,12 +1,11 @@
 // stores/useConfirmationStore.js
 import { defineStore } from 'pinia'
-import { useToaster } from './useToastStore';
 import { useConfirm } from 'primevue/useconfirm'
 
 
 
 export const useConfirmationStore = defineStore('confirmation', () => {
-const { showSuccessToast, showErrorToast } = useToaster()
+
 const confirm = useConfirm()
 
 const confirm1 = (onAccept, onReject = null) => {
@@ -24,11 +23,9 @@ const confirm1 = (onAccept, onReject = null) => {
         },
         accept: () => {
           onAccept?.()
-          showSuccessToast('Du har accepterat!')
         },
         reject: () => {
           onReject?.()
-          showErrorToast('Du har inte accepterat!')
         }
     });
 };
@@ -49,11 +46,9 @@ const confirm2 = (onAccept, onReject = null) => {
     },
     accept: () => {
       onAccept?.()
-      showSuccessToast('Nu är det borttaget!')
     },
     reject: () => {
       onReject?.()
-      showErrorToast('Borttagning avbröts.')
     }
   })
 }
@@ -74,11 +69,9 @@ const confirmDeleteUser = (user, onAccept, onReject = null) => {
     },
     accept: () => {
       onAccept?.()
-      showSuccessToast('Nu är det borttaget!')
     },
     reject: () => {
       onReject?.()
-      showErrorToast('Borttagning avbröts.')
     }
   })
 }

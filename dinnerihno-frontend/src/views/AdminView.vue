@@ -59,6 +59,7 @@ async function deleteUser(user) {
         headers: { Authorization: localStorage.getItem('auth') }
       })
       await fetchUsers()
+      showSuccessToast('Användaren är nu borttagen!')
     } catch (err) {
       showErrorToast('Kunde inte ta bort användaren.')
     }
