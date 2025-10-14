@@ -53,7 +53,7 @@ async function saveEdit(user) {
 }
 
 async function deleteUser(user) {
-  confirmationStore.confirm2(user, async () => {
+  confirmationStore.confirmDeleteUser(user, async () => {
     try {
       await axios.delete(`${apiUrl}/api/users/${user.id}`, {
         headers: { Authorization: localStorage.getItem('auth') }
