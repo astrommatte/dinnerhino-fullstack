@@ -18,6 +18,7 @@ public class Recipe {
     @Column(unique = true)
     private String name;
 
+    @Lob
     private String description;
     private int servings; // antal personer
 
