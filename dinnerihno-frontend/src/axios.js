@@ -1,11 +1,4 @@
 import axios from 'axios'
-import { setupCache } from 'axios-cache-adapter'
-
-// Skapa cache med TTL på 15 minuter
-const cache = setupCache({
-  maxAge: 15 * 60 * 1000,
-  // store: localStorage // om du vill spara cache mellan sessions
-})
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080',
