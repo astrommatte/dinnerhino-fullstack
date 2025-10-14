@@ -67,7 +67,7 @@ async function deleteUser(user) {
 }
 
 async function toggleActive(user) {
-  confirmationStore.confirm1(user, async () => {
+  confirmationStore.confirmActivateToggleUser(user, async () => {
 
   try {
     await axios.put(`${apiUrl}/api/users/${user.id}/active`, { active: !user.active }, {

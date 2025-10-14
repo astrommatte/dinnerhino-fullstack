@@ -76,9 +76,32 @@ const confirmDeleteUser = (user, onAccept, onReject = null) => {
   })
 }
 
+const confirmActivateToggleUser = (user, onAccept, onReject = null) => {
+  confirm.require({
+    message: `Är du säker på att du vill aktivera/inaktivera? ${user.username}`,
+    header: 'Bekräfta aktivering/avaktivering',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Avbryt',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Ja',
+    },
+    accept: () => {
+      onAccept?.()
+    },
+    reject: () => {
+      onReject?.()
+    }
+  })
+}
+
   return {
     confirm1,
     confirm2,
-    confirmDeleteUser
+    confirmDeleteUser,
+    confirmActivateToggleUser
   }
 })
