@@ -14,7 +14,6 @@ export const useRecipeStore = defineStore('recipe', () => {
     currentIndex.value = 0
   }
 
-
   const likeCurrentRecipe = () => {
     likedRecipes.value.push(recipes.value[currentIndex.value])
     nextRecipe()
@@ -49,7 +48,6 @@ export const useRecipeStore = defineStore('recipe', () => {
   function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5)
   }
-
 
   return {
     recipes,

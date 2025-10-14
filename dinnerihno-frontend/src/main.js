@@ -27,7 +27,6 @@ import Menubar from 'primevue/menubar';
 import Popover from 'primevue/popover'
 import { Card } from 'primevue'
 
-const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 const app = createApp(App)
 
 app.use(createPinia())
@@ -37,7 +36,7 @@ app.use(PrimeVue, {
   theme: {
     preset: Aura,
     options: {
-      darkModeSelector: 'system'  // eller klass, beroende på setup
+      darkModeSelector: 'system'
     }
   }
 })
@@ -62,8 +61,3 @@ app.component('Card', Card)
 app.directive('tooltip', Tooltip);
 
 app.mount('#app')
-
-// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-//   const newPrefersDark = e.matches
-//   window.location.reload()
-// })

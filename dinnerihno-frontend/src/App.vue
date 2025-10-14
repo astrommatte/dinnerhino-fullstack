@@ -1,7 +1,9 @@
 <template>
   <Navbar v-if="!isLoginPage" />
+  <ConfirmDialog/>
   <Toast position="top-center" />
   <router-view />
+  
   <div v-if="isLoading" class="overlay-spinner">
     <ProgressSpinner />
   </div>

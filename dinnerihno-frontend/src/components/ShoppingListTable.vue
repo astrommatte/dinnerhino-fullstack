@@ -28,7 +28,9 @@ import { useShoppingListStore } from '@/stores/useShoppingListStore';
 import { useRecipeStore } from '@/stores/useRecipeStore';
 import { useToaster } from '@/stores/useToastStore';
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
+import { useConfirmationStore } from '@/stores/useConfirmationStore';
 
+const confirmationStore = useConfirmationStore()
 const { showSuccessToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const recipeStore = useRecipeStore()
@@ -42,27 +44,28 @@ const sortedShoppingList = computed(() => {
   )
 })
 
-const deleteShoppingList = async () => {
-  if (!confirm('Är du säker på att du vill ta bort hela handlingslistan?')) return
+async function deleteShoppingList() {
+  confirmationStore.confirm2(async () => {
+    try {
+      showLoading()
+      await axios.delete(`${apiUrl}/api/shopping-list/clear`, {
+        headers: { Authorization: localStorage.getItem('auth') }
+      })
 
-  try {
-    showLoading()
-    await axios.delete(`${apiUrl}/api/shopping-list/clear`, {
-      headers: { Authorization: localStorage.getItem('auth') }
-    })
-    showSuccessToast('Handlingslistan borttagen')
+    } catch (err) {
+      showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
+    } finally {
+      shoppingListStore.setShoppingList([])
+      shoppingListStore.setOverriddenItems([])
 
-  } catch (err) {
-    showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
-  } finally {
-    shoppingListStore.setShoppingList([])
-    shoppingListStore.setOverriddenItems([])  // Lägg till denna rad för att tömma overriddenItems i store
-    localStorage.removeItem('overriddenItems') // Rensa även från localStorage
-    recipeStore.reset()
-    completedItems.value = new Set()
-    localStorage.removeItem('completedItems')
-    hideLoading()
-  }
+      localStorage.removeItem('overriddenItems')
+      localStorage.removeItem('completedItems')
+      
+      recipeStore.reset()
+      completedItems.value = new Set()
+      hideLoading()
+    }
+  })
 }
 
 const toggleItem = (index) => {

@@ -20,8 +20,10 @@ import UserListTable from '@/components/UserListTable.vue'
 import UserForm from '@/components/UserForm.vue'
 import { useUserListStore } from '@/stores/useUserStore'
 import { useToaster } from '@/stores/useToastStore'
+import { useConfirmationStore } from '@/stores/useConfirmationStore'
 
 const { showSuccessToast, showErrorToast } = useToaster()
+const confirmationStore = useConfirmationStore()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const userStore = useUserListStore()
 
@@ -51,20 +53,21 @@ async function saveEdit(user) {
 }
 
 async function deleteUser(user) {
-  if (!confirm(`Är du säker på att du vill ta bort ${user.firstName} ${user.lastName}?`)) return
-
-  try {
-    await axios.delete(`${apiUrl}/api/users/${user.id}`, {
-      headers: { Authorization: localStorage.getItem('auth') }
-    })
-    showSuccessToast('Användaren är nu borttagen')
-    await fetchUsers()
-  } catch (err) {
-    showErrorToast('Kunde inte ta bort användaren.')
-  }
+  confirmationStore.confirm2(user, async () => {
+    try {
+      await axios.delete(`${apiUrl}/api/users/${user.id}`, {
+        headers: { Authorization: localStorage.getItem('auth') }
+      })
+      await fetchUsers()
+    } catch (err) {
+      showErrorToast('Kunde inte ta bort användaren.')
+    }
+  })
 }
 
 async function toggleActive(user) {
+  confirmationStore.confirm1(user, async () => {
+
   try {
     await axios.put(`${apiUrl}/api/users/${user.id}/active`, { active: !user.active }, {
       headers: { Authorization: localStorage.getItem('auth') }
@@ -75,6 +78,7 @@ async function toggleActive(user) {
   } catch (err) {
     showErrorToast('Kunde inte uppdatera användaren.')
   }
+  })
 }
 
 async function fetchUsers() {
