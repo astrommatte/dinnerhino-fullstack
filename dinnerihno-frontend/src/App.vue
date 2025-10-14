@@ -7,11 +7,13 @@
   <div v-if="isLoading" class="overlay-spinner">
     <ProgressSpinner />
   </div>
+  <!-- <Footer/> -->
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
 import Navbar from './components/Navbar.vue'
+import Footer from './components/Footer.vue'
 import { computed, onMounted } from 'vue'
 import { useAuthStore } from './stores/useAuthStore'
 import { isLoading } from './stores/useLoadingStore'
