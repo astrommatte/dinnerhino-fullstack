@@ -9,7 +9,7 @@ export const useConfirmationStore = defineStore('confirmation', () => {
 const { showSuccessToast, showErrorToast } = useToaster()
 const confirm = useConfirm()
 
-const confirm1 = () => {
+const confirm1 = (onAccept, onReject = null) => {
     confirm.require({
         message: 'Vill du fortsätta?',
         header: 'Bekräfta',
@@ -23,15 +23,17 @@ const confirm1 = () => {
             label: 'Ja'
         },
         accept: () => {
-            showSuccessToast('Du har accepterat!')
+          onAccept?.()
+          showSuccessToast('Du har accepterat!')
         },
         reject: () => {
-            showErrorToast('Du har inte accepterat!')
+          onReject?.()
+          showErrorToast('Du har inte accepterat!')
         }
     });
 };
 
-const confirm2 = () => {
+const confirm2 = (onAccept, onReject = null) => {
   confirm.require({
     message: `Är du säker på att du vill ta bort?`,
     header: 'Bekräfta borttagning',
@@ -46,9 +48,11 @@ const confirm2 = () => {
       severity: 'danger'
     },
     accept: () => {
+      onAccept?.()
       showSuccessToast('Nu är det borttaget!')
     },
     reject: () => {
+      onReject?.()
       showErrorToast('Borttagning avbröts.')
     }
   })

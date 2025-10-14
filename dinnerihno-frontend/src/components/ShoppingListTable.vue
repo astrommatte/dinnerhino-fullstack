@@ -51,6 +51,7 @@ async function deleteShoppingList() {
       await axios.delete(`${apiUrl}/api/shopping-list/clear`, {
         headers: { Authorization: localStorage.getItem('auth') }
       })
+      console.log('tar bort listan')
 
     } catch (err) {
       showErrorToast('Gick ej att ta bort/nollställa handlingslistan!')
