@@ -4,15 +4,17 @@
       <ul class="liked-recipes-list">
         <li v-for="recipe in recipeStore.likedRecipes" :key="recipe.id">
           {{ recipe.name }}
+          <Button 
+            icon="pi pi-download" 
+            @click="() => downloadSinglePDF(recipe)" 
+            class="download-btn"
+          />
         </li>
       </ul>
       <div class="download-button">
-        <Button icon="pi pi-download" @click="downloadAllDescriptionsPDF"/>
-        <small style="display: block; margin-top: 0.5rem;">Laddar ner beskrivningarna som PDF</small>
+        <small>Ladda ner beskrivningarna som PDF</small>
       </div>
     </Panel>
-
-
 
     <Panel header="Ingredienser">
       <ul class="shopping-list">
@@ -57,34 +59,106 @@ const sortedShoppingList = computed(() => {
   )
 })
 
-function downloadAllDescriptionsPDF() {
-  confirmationStore.confirm1(async () => {
-    const recipes = recipeStore.likedRecipes
-    if (!recipes.length) {
-      alert('Inga recept att exportera!')
-      return
-    }
-    const doc = new jsPDF()
-    let yOffset = 20
+function downloadSinglePDF(recipe) {
+  const doc = new jsPDF()
+  let yOffset = 20
+  const pageHeight = 280
+  const marginX = 10
+  const lineHeight = 7
 
-    recipes.forEach((recipe, i) => {
-      if (i > 0) yOffset += 10
-      if (yOffset > 270) {
+  doc.setFontSize(16)
+  doc.text(recipe.name || 'Unnamed recipe', marginX, yOffset)
+  yOffset += lineHeight + 3
+
+  doc.setFontSize(12)
+  doc.text('Ingredienser:', marginX, yOffset)
+  yOffset += lineHeight
+
+  if (recipe.ingredients && recipe.ingredients.length > 0) {
+    recipe.ingredients.forEach((ingredient) => {
+      const text = `• ${ingredient.name} – ${ingredient.quantity}`
+      const splitText = doc.splitTextToSize(text, 180)
+      doc.text(splitText, marginX + 5, yOffset)
+      yOffset += lineHeight * splitText.length
+      if (yOffset > pageHeight) {
         doc.addPage()
         yOffset = 20
       }
-      doc.setFontSize(16)
-      doc.text(recipe.name || 'Unnamed recipe', 10, yOffset)
-      yOffset += 10
-      doc.setFontSize(12)
-      const splitDescription = doc.splitTextToSize(recipe.description || '', 180)
-      doc.text(splitDescription, 10, yOffset)
-      yOffset += splitDescription.length * 7
     })
+  } else {
+    doc.text('Inga ingredienser angivna', marginX + 5, yOffset)
+    yOffset += lineHeight
+  }
 
-    doc.save('Alla_receptbeskrivningar.pdf')
-  })
+  yOffset += 5
+
+  doc.text('Beskrivning:', marginX, yOffset)
+  yOffset += lineHeight
+
+  const splitDescription = doc.splitTextToSize(recipe.description || 'Ingen beskrivning angiven', 180)
+  doc.text(splitDescription, marginX, yOffset)
+  yOffset += lineHeight * splitDescription.length
+
+  const safeName = (recipe.name || 'Recept').replace(/[^a-z0-9_\-åäö ]/gi, '_')
+  doc.save(`${safeName}.pdf`)
 }
+
+
+// function downloadSeparatePDFs() {
+//   const recipes = recipeStore.likedRecipes
+//   if (!recipes.length) {
+//     alert('Inga recept att exportera!')
+//     return
+//   }
+
+//   recipes.forEach((recipe) => {
+//     const doc = new jsPDF()
+//     let yOffset = 20
+//     const pageHeight = 280
+//     const marginX = 10
+//     const lineHeight = 7
+
+//     // Rubrik - receptnamn
+//     doc.setFontSize(16)
+//     doc.text(recipe.name || 'Unnamed recipe', marginX, yOffset)
+//     yOffset += lineHeight + 3
+
+//     // Ingredienser
+//     doc.setFontSize(12)
+//     doc.text('Ingredienser:', marginX, yOffset)
+//     yOffset += lineHeight
+
+//     if (recipe.ingredients && recipe.ingredients.length > 0) {
+//       recipe.ingredients.forEach((ingredient) => {
+//         const text = `• ${ingredient.name} – ${ingredient.quantity}`
+//         const splitText = doc.splitTextToSize(text, 180)
+//         doc.text(splitText, marginX + 5, yOffset)
+//         yOffset += lineHeight * splitText.length
+//         if (yOffset > pageHeight) {
+//           doc.addPage()
+//           yOffset = 20
+//         }
+//       })
+//     } else {
+//       doc.text('Inga ingredienser angivna', marginX + 5, yOffset)
+//       yOffset += lineHeight
+//     }
+
+//     yOffset += 5
+
+//     // Beskrivning
+//     doc.text('Beskrivning:', marginX, yOffset)
+//     yOffset += lineHeight
+
+//     const splitDescription = doc.splitTextToSize(recipe.description || 'Ingen beskrivning angiven', 180)
+//     doc.text(splitDescription, marginX, yOffset)
+//     yOffset += lineHeight * splitDescription.length
+
+//     // Spara filen med receptnamnet som filnamn (rensa filnamnet från ogiltiga tecken)
+//     const safeName = (recipe.name || 'Recept').replace(/[^a-z0-9_\-åäö ]/gi, '_')
+//     doc.save(`${safeName}.pdf`)
+//   })
+// }
 
 async function deleteShoppingList() {
   confirmationStore.confirm2(async () => {
@@ -145,9 +219,10 @@ watch(
 </script>
 
 <style scoped>
-.download-button {
-  text-align: center;
-  margin-top: 1rem;
+.download-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 4px;
 }
 
 .liked-recipes-list,
