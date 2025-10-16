@@ -18,7 +18,7 @@ public class ShoppingListItemController {
 
     @PostMapping("/add/{recipeId}")
     public void addRecipeToShoppingList(@PathVariable Long recipeId, Principal principal) {
-        User currentUser = userRepository.findByUsername(principal.getName())
+        User currentUser = userRepository.findByUsernameIgnoreCase(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         shoppingListService.addRecipeToShoppingList(recipeId, currentUser);
     }
