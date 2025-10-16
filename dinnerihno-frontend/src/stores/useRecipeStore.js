@@ -1,13 +1,19 @@
 // stores/useRecipeStore.js
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-const likedRecipes = ref([])
+
 
 export const useRecipeStore = defineStore('recipe', () => {
   const recipes = ref([])
   const currentIndex = ref(0)
   const loopEvent = ref(0)
+
+  const likedRecipes = ref(JSON.parse(localStorage.getItem('likedRecipes') || '[]'))
+
+  watch(likedRecipes, (newVal) => {
+    localStorage.setItem('likedRecipes', JSON.stringify(newVal))
+  }, { deep: true })
 
   const setRecipes = (newRecipes) => {
     recipes.value = shuffle(newRecipes)
@@ -34,6 +40,7 @@ export const useRecipeStore = defineStore('recipe', () => {
   function reset() {
     currentIndex.value = 0
     likedRecipes.value = []
+    localStorage.removeItem('likedRecipes')
     recipes.value = shuffle(recipes.value)
     currentIndex.value = 0
     loopEvent.value = 0

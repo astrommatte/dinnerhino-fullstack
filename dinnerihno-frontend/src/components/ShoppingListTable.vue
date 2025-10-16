@@ -1,23 +1,34 @@
 <template>
   <div>
-    <ul class="shopping-list">
-      <h4>Antal recept valda i föregående sida: {{ recipeStore.likedRecipes.length }}</h4>
-      <li
-        v-for="(item, index) in sortedShoppingList"
-        :key="index"
-        :style="{ 
-          textDecoration: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 'line-through' : 'none',
-          opacity: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) ? 0.2 : 1
-        }"
+    <Panel header="Valda recept">
+      <ul class="liked-recipes-list">
+        <li v-for="recipe in recipeStore.likedRecipes" :key="recipe.id">
+          {{ recipe.name }}
+        </li>
+      </ul>
+      <div class="download-button">
+        <Button icon="pi pi-download" @click="downloadAllDescriptionsPDF"/>
+        <small style="display: block; margin-top: 0.5rem;">Laddar ner beskrivningarna som PDF</small>
+      </div>
+    </Panel>
 
-        @click="toggleItem(index)"
-      >
-        {{ item.ingredientName }} – <em>{{ item.quantity }}</em>
-      </li>
-    </ul>
-    <div class="delete-button">
-      <Button @click="deleteShoppingList">Ta bort hela listan</Button>
-    </div>
+
+
+    <Panel header="Ingredienser">
+      <ul class="shopping-list">
+        <li
+          v-for="(item, index) in sortedShoppingList"
+          :key="index"
+          :class="{ completed: isMarkedAsAtHome(item.ingredientName) || completedItems.has(index) }"
+          @click="toggleItem(index)"
+        >
+          {{ item.ingredientName }} – <em>{{ item.quantity }}</em>
+        </li>
+      </ul>
+      <div class="delete-button">
+        <Button v-tooltip="'Tar bort hela listan'" @click="deleteShoppingList">Ta bort hela listan</Button>
+      </div>
+    </Panel>
   </div>
 </template>
 
@@ -29,6 +40,8 @@ import { useRecipeStore } from '@/stores/useRecipeStore';
 import { useToaster } from '@/stores/useToastStore';
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import { useConfirmationStore } from '@/stores/useConfirmationStore';
+import jsPDF from 'jspdf';
+import { Panel } from 'primevue'
 
 const confirmationStore = useConfirmationStore()
 const { showSuccessToast, showErrorToast } = useToaster()
@@ -43,6 +56,35 @@ const sortedShoppingList = computed(() => {
     a.ingredientName.localeCompare(b.ingredientName, 'sv')
   )
 })
+
+function downloadAllDescriptionsPDF() {
+  confirmationStore.confirm1(async () => {
+    const recipes = recipeStore.likedRecipes
+    if (!recipes.length) {
+      alert('Inga recept att exportera!')
+      return
+    }
+    const doc = new jsPDF()
+    let yOffset = 20
+
+    recipes.forEach((recipe, i) => {
+      if (i > 0) yOffset += 10
+      if (yOffset > 270) {
+        doc.addPage()
+        yOffset = 20
+      }
+      doc.setFontSize(16)
+      doc.text(recipe.name || 'Unnamed recipe', 10, yOffset)
+      yOffset += 10
+      doc.setFontSize(12)
+      const splitDescription = doc.splitTextToSize(recipe.description || '', 180)
+      doc.text(splitDescription, 10, yOffset)
+      yOffset += splitDescription.length * 7
+    })
+
+    doc.save('Alla_receptbeskrivningar.pdf')
+  })
+}
 
 async function deleteShoppingList() {
   confirmationStore.confirm2(async () => {
@@ -103,11 +145,16 @@ watch(
 </script>
 
 <style scoped>
-.shopping-list {
+.download-button {
   text-align: center;
+  margin-top: 1rem;
+}
+
+.liked-recipes-list,
+.shopping-list {
   list-style: none;
   padding: 0;
-  margin: 1rem 0;
+  margin: 0.5rem 0 1rem 0;
 }
 
 .delete-button {
