@@ -16,10 +16,10 @@
             <Textarea
               id="description"
               v-model="recipe.description"
-              rows="5"
+              rows="8"
               maxlength="1000"
               autoResize
-              placeholder="Beskrivning, max 1000 tecken."
+              placeholder="Beskrivning.."
             />
           </FloatLabel>
 
@@ -48,6 +48,21 @@
         </div>
         <Button label="Lägg till ingrediens" class="mt-2" @click="addIngredient" />
 
+        <FileUpload
+          mode="basic"
+          name="file"
+          choose-label="Välj bild"
+          :auto="false"
+          :custom-upload="true"
+          accept="image/*"
+          @select="onImageSelect"
+        />
+
+        <div v-if="recipe.image?.url" class="recipe-image-container">
+          <img :src="recipe.image.url" alt="Receptbild" class="image-preview" />
+          <Button icon="pi pi-times" severity="danger" @click="removeImage" class="remove-image-btn" />
+        </div>
+
         <!-- Skapa-knapp -->
         <Button label="Spara recept" class="mt-4" @click="submitRecipe" />
       </div>
@@ -65,11 +80,13 @@ import axios from 'axios'
 import { useToaster } from '@/stores/useToastStore'
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import FloatLabel from 'primevue/floatlabel'
+import { useConfirmationStore } from '@/stores/useConfirmationStore'
+import FileUpload from 'primevue/fileupload';
 
-const { showSuccessToast, showErrorToast } = useToaster()
+const confirmationStore = useConfirmationStore()
+const { showSuccessToast, showErrorToast, showInfoToast } = useToaster()
 const showIngredientForm = ref(false)
-// Du kan även använda computed om du vill visa "kvar" istället:
-//const remainingChars = computed(() => 1000 - description.value.length)
+const selectedFile = ref(null);
 
 const props = defineProps({
   existingRecipe: {
@@ -83,11 +100,12 @@ const resetForm = () => {
     name: '',
     description: '',
     servings: 1,
-    ingredients: []
+    ingredients: [],
+    image: null
   }
 }
 
-const emit = defineEmits(['saved'])
+const emit = defineEmits(['saved', 'imageDeleted'])
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
@@ -97,7 +115,8 @@ const recipe = ref({
   servings: 1,
   ingredients: [
     { name: '', quantity: '' }  // quantity som string, utan unit
-  ]
+  ],
+  image: null
 })
 
 watch(() => props.existingRecipe, (newVal) => {
@@ -117,33 +136,108 @@ const removeIngredient = (index) => {
   recipe.value.ingredients.splice(index, 1)
 }
 
-const submitRecipe = async () => {
-  try {
-    showLoading()
-    const headers = { Authorization: localStorage.getItem('auth') }
-
-    if (props.existingRecipe && props.existingRecipe.id) {
-      // Redigera recept
-      await axios.put(`${apiUrl}/api/recipes/${props.existingRecipe.id}`, recipe.value, { headers })
-      showSuccessToast('Recept uppdaterat!')
-    } else {
-      // Skapa nytt recept
-      await axios.post(`${apiUrl}/api/recipes`, recipe.value, { headers })
-      showSuccessToast('Recept skapat!')
-    }
-
-    emit('saved') // Meddela förälder
-
-    resetForm()
-  } catch (error) {
-    showErrorToast('Något gick fel vid sparandet av recept.')
-  } finally {
-    hideLoading()
+function onImageSelect(event) {
+  const file = event.files?.[0];
+  if (file) {
+    selectedFile.value = file;
   }
 }
+
+async function removeImage () {
+  confirmationStore.confirm2(async () => {
+    try {
+      showLoading();
+      showInfoToast('Tar bort bild...');
+      
+      const headers = { Authorization: localStorage.getItem('auth') || '' };
+      await axios.delete(`${apiUrl}/api/images/recipe/${props.existingRecipe.id}`, { headers });
+
+      showSuccessToast('Bild borttagen!');
+      emit('imageDeleted', props.existingRecipe.id);
+    } catch (error) {
+      showErrorToast('Misslyckades att ta bort bild');
+    } finally {
+      hideLoading();
+    }
+  });
+}
+
+const submitRecipe = async () => {
+  try {
+    showLoading();
+    showInfoToast('Laddar upp nytt recept..');
+    const headers = { Authorization: localStorage.getItem('auth') };
+    let savedRecipeId = null;
+
+    if (props.existingRecipe && props.existingRecipe.id) {
+      // Uppdatera
+      const res = await axios.put(
+        `${apiUrl}/api/recipes/${props.existingRecipe.id}`,
+        recipe.value,
+        { headers }
+      );
+      savedRecipeId = res.data.id;
+      
+    } else {
+      // Skapa nytt
+      const res = await axios.post(
+        `${apiUrl}/api/recipes`,
+        recipe.value,
+        { headers }
+      );
+      savedRecipeId = res.data.id;
+      
+    }
+
+    // Ladda upp bild om en fil valts
+    if (selectedFile.value) {
+
+      // 2. Bygg formData
+      const formData = new FormData();
+      formData.append("file", selectedFile.value);
+      formData.append("recipeId", savedRecipeId); // För att backend ska koppla bilden till recept
+
+      // 3. Skicka till din egen server (inte direkt till Cloudinary)
+      await axios.post(`${apiUrl}/api/images/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: localStorage.getItem('auth') || '',
+        }
+      });
+
+      selectedFile.value = null;
+    }
+    showSuccessToast('Recept skapat!');
+    emit('saved'); // för att uppdatera receptlistan
+    resetForm();
+  } catch (error) {
+    showErrorToast('Fel vid recept-sparande eller bilduppladdning.');
+  } finally {
+    hideLoading();
+  }
+};
 </script>
 
 <style scoped>
+    .image-preview {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  .remove-image-btn {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    color: var(--surface-500);
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 5px;
+  }
+
   .textarea-wrapper {
     position: relative;
   }
@@ -151,7 +245,7 @@ const submitRecipe = async () => {
   .char-counter-inside {
     position: absolute;
     bottom: 8px;
-    right: 10px;
+    left: 175px;
     font-size: 12px;
     color: var(--text-secondary, #888);
     background: var(--surface-card);

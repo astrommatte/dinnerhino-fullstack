@@ -1,5 +1,6 @@
 package com.astrom.dinnerihno.recipe;
 
+import com.astrom.dinnerihno.image.Image;
 import com.astrom.dinnerihno.ingredient.Ingredient;
 import com.astrom.dinnerihno.user.User;
 import jakarta.persistence.*;
@@ -28,5 +29,9 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<>();
+
+    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Image image;
+
 
 }
