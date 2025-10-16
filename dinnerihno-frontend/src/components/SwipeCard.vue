@@ -11,8 +11,35 @@
     @touchmove="moveSwipe"
     @touchend="endSwipe"
   >
+
     <div class="card">
       <h3 class="title-text">{{ currentRecipe.name }}</h3>
+      <!-- SwipeCard.vue -->
+      <div class="image-card" v-if="currentRecipe.image?.url">
+        <img
+          :src="currentRecipe.image.url"
+          alt="Receptbild"
+          class="recipe-thumbnail"
+          @click="openImageDialog(currentRecipe.image.url)"
+        />
+      </div>
+
+      <Dialog
+        v-model:visible="imageDialogVisible"
+        modal
+        :style="{ width: '80vw' }"
+        :closable="true"
+        header="Receptbild"
+      >
+        <img
+          :src="dialogImageUrl"
+          alt="Stor receptbild"
+          style="width: 100%; height: auto; object-fit: contain;"
+        />
+      </Dialog>
+
+
+
       <p>{{ currentRecipe.description }}</p>
       <p><strong>Portioner:</strong> {{ currentRecipe.servings }}</p>
 
@@ -62,6 +89,7 @@ import { useToaster } from '@/stores/useToastStore'
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import router from '@/router'
 import axios from 'axios'
+import { Dialog } from 'primevue'
 
 const { showSuccessToast, showInfoToast, showErrorToast } = useToaster()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -71,7 +99,13 @@ const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentInde
 const totalAmountOfrecipes = computed(() => recipeStore.recipes.length)
 const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByUsername)
 const infoModal = ref(false)
+const imageDialogVisible = ref(false)
+const dialogImageUrl = ref(null)
 
+const openImageDialog = (url) => {
+  dialogImageUrl.value = url
+  imageDialogVisible.value = true
+}
 // Visa feedback till användaren när de gått igenom alla recept
 // Reagera varje gång recepten startar om
 watch(() => recipeStore.loopEvent, () => {
@@ -164,6 +198,24 @@ const openInfoModal = (() => {
   background-color: var(--surface-card);
   color: var(--text-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-thumbnail {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.recipe-thumbnail:hover {
+  transform: scale(1.03);
+}
+
+.image-card{
+  display: flex;
+  justify-content: center;
 }
 
 .card h3 {

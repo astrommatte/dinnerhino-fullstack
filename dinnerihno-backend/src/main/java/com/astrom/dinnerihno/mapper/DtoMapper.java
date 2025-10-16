@@ -1,5 +1,7 @@
 package com.astrom.dinnerihno.mapper;
 
+import com.astrom.dinnerihno.image.Image;
+import com.astrom.dinnerihno.image.ImageDTO;
 import com.astrom.dinnerihno.ingredient.Ingredient;
 import com.astrom.dinnerihno.ingredient.IngredientCreateDTO;
 import com.astrom.dinnerihno.ingredient.IngredientDTO;
@@ -68,6 +70,14 @@ public class DtoMapper {
                 .map(this::toIngredientDto)
                 .toList());
 
+        if (recipe.getImage() != null) {
+            ImageDTO imageDto = new ImageDTO();
+            imageDto.setId(recipe.getImage().getId());
+            imageDto.setUrl(recipe.getImage().getUrl());
+            dto.setImage(imageDto);
+        }
+
+
         return dto;
     }
 
@@ -85,6 +95,15 @@ public class DtoMapper {
                 .toList();
 
         recipe.setIngredients(ingredients);
+
+        // Bild (om DTO innehåller en)
+        if (dto.getImage() != null) {
+            Image image = new Image();
+            image.setUrl(dto.getImage().getUrl());
+            image.setRecipe(recipe); // <-- Viktigt vid OneToOne
+
+            recipe.setImage(image); // ✅ Sätt bilden
+        }
 
         return recipe;
     }

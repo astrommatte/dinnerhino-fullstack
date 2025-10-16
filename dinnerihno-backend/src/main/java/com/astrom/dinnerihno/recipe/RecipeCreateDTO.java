@@ -1,5 +1,6 @@
 package com.astrom.dinnerihno.recipe;
 
+import com.astrom.dinnerihno.image.ImageDTO;
 import com.astrom.dinnerihno.ingredient.Ingredient;
 import com.astrom.dinnerihno.ingredient.IngredientCreateDTO;
 import com.astrom.dinnerihno.user.User;
@@ -14,4 +15,5 @@ public class RecipeCreateDTO {
     private String description;
     private int servings;
     private List<IngredientCreateDTO> ingredients = new ArrayList<>();
+    private ImageDTO image;
 }

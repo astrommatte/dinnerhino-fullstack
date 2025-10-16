@@ -14,6 +14,7 @@
       v-if="showCreateForm"
       :existingRecipe="recipeToEdit"
       @saved="onRecipeSaved"
+      @imageDeleted="onImageDeleted"
     />
 
     <ul class="recipe-list">
@@ -25,18 +26,28 @@
     </ul>
 
 
-    <!-- OverlayPanel från PrimeVue -->
     <Popover ref="op">
       <div v-if="selectedRecipe">
         <h3>{{ selectedRecipe.name }}</h3>
         <p class="recipe-description">{{ selectedRecipe.description }}</p>
+
+        <!-- Visa bilden -->
+        <div v-if="selectedRecipe.image" class="recipe-image-container" style="position: relative; display: inline-block;">
+          <img
+            :src="selectedRecipe.image.url"
+            alt="Receptbild"
+            class="popover-image"
+            @click="showLargeImage = true"
+          />
+        </div>
+        <!-- Ingredienser -->
         <ul>
           <li v-for="(ing, i) in selectedRecipe.ingredients" :key="i">
             {{ ing.quantity }} {{ ing.unit }} {{ ing.name }}
           </li>
         </ul>
 
-        <!-- Åtgärdsknappar -->
+        <!-- Åtgärder -->
         <div class="actions">
           <Button label="Redigera" @click="editRecipe(selectedRecipe)" />
           <Button label="Ta bort" severity="danger" @click="deleteRecipe(selectedRecipe.id)" />
@@ -74,7 +85,6 @@ const toggleForm = () => {
 
 const fetchRecipes = async () => {
   showLoading()
-  showInfoToast('Här finns dina personliga recept som du kan uppdatera/ta bort')
   try {
     const res = await axios.get(`${apiUrl}/api/recipes/my`, {
       headers: { Authorization: localStorage.getItem('auth') }
@@ -83,7 +93,6 @@ const fetchRecipes = async () => {
   }catch(err) {
     showErrorToast('Gick inte att hämta recept')
   } finally {
-    showSuccessToast('Recept hämtade!')
     hideLoading()
   }
 
@@ -105,6 +114,8 @@ const op = ref(null)
 async function deleteRecipe(id) {
   confirmationStore.confirm2(async () => {
     try {
+      op.value?.hide()
+      showLoading()
       await axios.delete(`${apiUrl}/api/recipes/${id}`, {
         headers: { Authorization: localStorage.getItem('auth') }
       })
@@ -113,6 +124,7 @@ async function deleteRecipe(id) {
     } catch (err) {
       showErrorToast('Gick inte att ta bort recept')
     } finally {
+      hideLoading()
       op.value?.hide()
     }
   })
@@ -121,7 +133,7 @@ async function deleteRecipe(id) {
 // Editera recept - du kan navigera till en edit-sida eller visa ett formulär
 async function editRecipe(recipe) {
   op.value?.hide()
-  selectedRecipe.value = null
+  selectedRecipe.value = { ...recipe }
   showCreateForm.value = true
   recipeToEdit.value = recipe
 }
@@ -133,6 +145,33 @@ const onRecipeSaved = () => {
   fetchRecipes()
 }
 
+const onImageDeleted = (recipeId) => {
+  // Uppdatera det som visas i formuläret
+  if (recipeToEdit.value?.id === recipeId) {
+    recipeToEdit.value = {
+      ...recipeToEdit.value,
+      image: null // 👈 DETTA gör att v-if slutar gälla
+    };
+  }
+
+  // Uppdatera det som visas i listan (om du har bild där med)
+  const index = recipes.value.findIndex(r => r.id === recipeId);
+  if (index !== -1) {
+    recipes.value.splice(index, 1, {
+      ...recipes.value[index],
+      image: null // 👈 detta också
+    });
+  }
+
+  // Uppdatera Popovern om den är öppen
+  if (selectedRecipe.value?.id === recipeId) {
+    selectedRecipe.value = {
+      ...selectedRecipe.value,
+      image: null
+    };
+  }
+}
+
 </script>
 
 <style scoped>
@@ -142,6 +181,13 @@ const onRecipeSaved = () => {
   }
   .cancel-create-buttons{
     width: 100%;
+  }
+
+  .popover-image {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 4px;
+    object-fit: cover;
   }
 
   .recipe-list {

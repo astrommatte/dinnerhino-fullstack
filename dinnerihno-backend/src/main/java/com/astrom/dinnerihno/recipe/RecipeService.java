@@ -1,12 +1,17 @@
 package com.astrom.dinnerihno.recipe;
 
+import com.astrom.dinnerihno.image.Image;
+import com.astrom.dinnerihno.image.ImageRepository;
 import com.astrom.dinnerihno.mapper.DtoMapper;
 import com.astrom.dinnerihno.user.User;
 import com.astrom.dinnerihno.user.UserRepository;
+import com.cloudinary.Cloudinary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -14,7 +19,9 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
     private final DtoMapper dtoMapper;
+    private final Cloudinary cloudinary;
 
     public RecipeDTO createRecipe(RecipeCreateDTO dto, String username) {
         // hämta användaren från DB baserat på inloggad email
@@ -73,6 +80,18 @@ public class RecipeService {
 
         if (!recipe.getCreatedBy().getUsername().equals(username)) {
             throw new RuntimeException("You can only delete your own recipes");
+        }
+
+        // Radera bild från Cloudinary om det finns en
+        Image image = recipe.getImage();
+        if (image != null) {
+            try {
+                cloudinary.uploader().destroy(image.getPublicId(), Map.of());
+            } catch (IOException e) {
+                System.err.println("Kunde inte ta bort bild från Cloudinary: " + image.getPublicId());
+            }
+            // Om du vill radera bilden från DB separat:
+            imageRepository.delete(image);
         }
 
         recipeRepository.delete(recipe);

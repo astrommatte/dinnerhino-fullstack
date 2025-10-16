@@ -39,6 +39,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users/my-page/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/users/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+                        .requestMatchers("/api/images/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/cloudinary/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/settings/registration").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/recipes/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/shopping-list/add/*").authenticated()
