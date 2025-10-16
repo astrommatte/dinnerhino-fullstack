@@ -26,6 +26,7 @@ import Toast from 'primevue/toast'
 import Menubar from 'primevue/menubar';
 import Popover from 'primevue/popover'
 import { Card } from 'primevue'
+import { Panel } from 'primevue'
 
 const app = createApp(App)
 
@@ -57,6 +58,7 @@ app.component('Toast', Toast)
 app.component('Menubar', Menubar)
 app.component('Popover', Popover)
 app.component('Card', Card)
+app.component('Panel', Panel)
 
 app.directive('tooltip', Tooltip);
 
