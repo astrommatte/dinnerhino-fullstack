@@ -6,14 +6,21 @@
           {{ recipe.name }}
           <Button 
             icon="pi pi-download" 
-            @click="() => downloadSinglePDF(recipe)" 
+            @click="() => downloadRecipe(recipe)" 
             class="download-btn"
           />
         </li>
       </ul>
-      <div class="download-button">
-        <small>Ladda ner beskrivningarna som PDF</small>
+      <div class="download-all-btn-container">
+      <Button 
+        icon="pi pi-download" 
+        label="Ladda ner alla"
+        @click="downloadAllRecipes"
+        class="download-all-btn"
+      />
       </div>
+      <small>*Ladda ner alla recept, eller enstaka.</small>
+
     </Panel>
 
     <Panel header="Ingredienser">
@@ -42,7 +49,6 @@ import { useRecipeStore } from '@/stores/useRecipeStore';
 import { useToaster } from '@/stores/useToastStore';
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import { useConfirmationStore } from '@/stores/useConfirmationStore';
-import jsPDF from 'jspdf';
 import { Panel } from 'primevue'
 
 const confirmationStore = useConfirmationStore()
@@ -53,130 +59,19 @@ const { isMarkedAsAtHome } = useShoppingListStore()
 const shoppingListStore = useShoppingListStore()
 const completedItems = ref(new Set())
 
-const completedIngredientNames = computed(() => {
-  return new Set(
-    [...completedItems.value]
-      .map(index => sortedShoppingList.value[index]?.ingredientName)
-      .filter(Boolean)
-  )
-})
+function downloadAllRecipes() {
+  recipeStore.downloadAllRecipesPDF(recipeStore.likedRecipes)
+}
+
+function downloadRecipe(recipe) {
+  recipeStore.downloadSinglePDF(recipe)
+}
 
 const sortedShoppingList = computed(() => {
   return [...shoppingListStore.ingredients].sort((a, b) =>
     a.ingredientName.localeCompare(b.ingredientName, 'sv')
   )
 })
-
-function downloadSinglePDF(recipe) {
-  const doc = new jsPDF()
-  let yOffset = 20
-  const pageHeight = 280
-  const marginX = 10
-  const lineHeight = 7
-
-  const shoppingListStore = useShoppingListStore()
-
-  doc.setFontSize(16)
-  doc.text(recipe.name || 'Unnamed recipe', marginX, yOffset)
-  yOffset += lineHeight + 3
-
-  doc.setFontSize(12)
-  doc.text('Ingredienser:', marginX, yOffset)
-  yOffset += lineHeight
-
-  if (recipe.ingredients && recipe.ingredients.length > 0) {
-    const filteredIngredients = recipe.ingredients.filter((ingredient) => {
-      return !shoppingListStore.isMarkedAsAtHome(ingredient.name)
-    })
-
-    if (filteredIngredients.length === 0) {
-      doc.text('Inga ingredienser att visa (alla är markerade)', marginX + 5, yOffset)
-      yOffset += lineHeight
-    } else {
-      filteredIngredients.forEach((ingredient) => {
-        const text = `• ${ingredient.name} – ${ingredient.quantity}`
-        const splitText = doc.splitTextToSize(text, 180)
-        doc.text(splitText, marginX + 5, yOffset)
-        yOffset += lineHeight * splitText.length
-
-        if (yOffset > pageHeight) {
-          doc.addPage()
-          yOffset = 20
-        }
-      })
-    }
-  } else {
-    doc.text('Inga ingredienser angivna', marginX + 5, yOffset)
-    yOffset += lineHeight
-  }
-
-  yOffset += 5
-
-  doc.text('Beskrivning:', marginX, yOffset)
-  yOffset += lineHeight
-
-  const splitDescription = doc.splitTextToSize(recipe.description || 'Ingen beskrivning angiven', 180)
-  doc.text(splitDescription, marginX, yOffset)
-
-  const safeName = (recipe.name || 'Recept').replace(/[^a-z0-9_\-åäö ]/gi, '_')
-  doc.save(`${safeName}.pdf`)
-}
-
-// function downloadSeparatePDFs() {
-//   const recipes = recipeStore.likedRecipes
-//   if (!recipes.length) {
-//     alert('Inga recept att exportera!')
-//     return
-//   }
-
-//   recipes.forEach((recipe) => {
-//     const doc = new jsPDF()
-//     let yOffset = 20
-//     const pageHeight = 280
-//     const marginX = 10
-//     const lineHeight = 7
-
-//     // Rubrik - receptnamn
-//     doc.setFontSize(16)
-//     doc.text(recipe.name || 'Unnamed recipe', marginX, yOffset)
-//     yOffset += lineHeight + 3
-
-//     // Ingredienser
-//     doc.setFontSize(12)
-//     doc.text('Ingredienser:', marginX, yOffset)
-//     yOffset += lineHeight
-
-//     if (recipe.ingredients && recipe.ingredients.length > 0) {
-//       recipe.ingredients.forEach((ingredient) => {
-//         const text = `• ${ingredient.name} – ${ingredient.quantity}`
-//         const splitText = doc.splitTextToSize(text, 180)
-//         doc.text(splitText, marginX + 5, yOffset)
-//         yOffset += lineHeight * splitText.length
-//         if (yOffset > pageHeight) {
-//           doc.addPage()
-//           yOffset = 20
-//         }
-//       })
-//     } else {
-//       doc.text('Inga ingredienser angivna', marginX + 5, yOffset)
-//       yOffset += lineHeight
-//     }
-
-//     yOffset += 5
-
-//     // Beskrivning
-//     doc.text('Beskrivning:', marginX, yOffset)
-//     yOffset += lineHeight
-
-//     const splitDescription = doc.splitTextToSize(recipe.description || 'Ingen beskrivning angiven', 180)
-//     doc.text(splitDescription, marginX, yOffset)
-//     yOffset += lineHeight * splitDescription.length
-
-//     // Spara filen med receptnamnet som filnamn (rensa filnamnet från ogiltiga tecken)
-//     const safeName = (recipe.name || 'Recept').replace(/[^a-z0-9_\-åäö ]/gi, '_')
-//     doc.save(`${safeName}.pdf`)
-//   })
-// }
 
 async function deleteShoppingList() {
   confirmationStore.confirm2(async () => {
@@ -237,39 +132,50 @@ watch(
 </script>
 
 <style scoped>
-.download-btn {
-  width: 1.75rem;
-  height: 1.75rem;
-  margin: 4px;
-}
+  .download-all-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.liked-recipes-list,
-.shopping-list {
-  list-style: none;
-  padding: 0;
-  margin: 0.5rem 0 1rem 0;
-}
+  .download-all-btn{
+    width: 10rem;
+    height: 2rem;
+  }
 
-.delete-button {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-}
+  .download-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 4px;
+  }
 
-.shopping-list li {
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--surface-border);
-  cursor: pointer;
-  user-select: none;
-}
+  .liked-recipes-list,
+  .shopping-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 1rem 0;
+  }
 
-.shopping-list li:hover {
-  background-color: var(--surface-hover);
-}
+  .delete-button {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
 
-.completed {
-  text-decoration: line-through;
-  color: var(--text-secondary-color);
-  opacity: 0.7;
-}
+  .shopping-list li {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .shopping-list li:hover {
+    background-color: var(--surface-hover);
+  }
+
+  .completed {
+    text-decoration: line-through;
+    color: var(--text-secondary-color);
+    opacity: 0.7;
+  }
 </style>
