@@ -53,6 +53,14 @@ const { isMarkedAsAtHome } = useShoppingListStore()
 const shoppingListStore = useShoppingListStore()
 const completedItems = ref(new Set())
 
+const completedIngredientNames = computed(() => {
+  return new Set(
+    [...completedItems.value]
+      .map(index => sortedShoppingList.value[index]?.ingredientName)
+      .filter(Boolean)
+  )
+})
+
 const sortedShoppingList = computed(() => {
   return [...shoppingListStore.ingredients].sort((a, b) =>
     a.ingredientName.localeCompare(b.ingredientName, 'sv')
@@ -66,6 +74,8 @@ function downloadSinglePDF(recipe) {
   const marginX = 10
   const lineHeight = 7
 
+  const shoppingListStore = useShoppingListStore()
+
   doc.setFontSize(16)
   doc.text(recipe.name || 'Unnamed recipe', marginX, yOffset)
   yOffset += lineHeight + 3
@@ -75,16 +85,26 @@ function downloadSinglePDF(recipe) {
   yOffset += lineHeight
 
   if (recipe.ingredients && recipe.ingredients.length > 0) {
-    recipe.ingredients.forEach((ingredient) => {
-      const text = `• ${ingredient.name} – ${ingredient.quantity}`
-      const splitText = doc.splitTextToSize(text, 180)
-      doc.text(splitText, marginX + 5, yOffset)
-      yOffset += lineHeight * splitText.length
-      if (yOffset > pageHeight) {
-        doc.addPage()
-        yOffset = 20
-      }
+    const filteredIngredients = recipe.ingredients.filter((ingredient) => {
+      return !shoppingListStore.isMarkedAsAtHome(ingredient.name)
     })
+
+    if (filteredIngredients.length === 0) {
+      doc.text('Inga ingredienser att visa (alla är markerade)', marginX + 5, yOffset)
+      yOffset += lineHeight
+    } else {
+      filteredIngredients.forEach((ingredient) => {
+        const text = `• ${ingredient.name} – ${ingredient.quantity}`
+        const splitText = doc.splitTextToSize(text, 180)
+        doc.text(splitText, marginX + 5, yOffset)
+        yOffset += lineHeight * splitText.length
+
+        if (yOffset > pageHeight) {
+          doc.addPage()
+          yOffset = 20
+        }
+      })
+    }
   } else {
     doc.text('Inga ingredienser angivna', marginX + 5, yOffset)
     yOffset += lineHeight
@@ -97,12 +117,10 @@ function downloadSinglePDF(recipe) {
 
   const splitDescription = doc.splitTextToSize(recipe.description || 'Ingen beskrivning angiven', 180)
   doc.text(splitDescription, marginX, yOffset)
-  yOffset += lineHeight * splitDescription.length
 
   const safeName = (recipe.name || 'Recept').replace(/[^a-z0-9_\-åäö ]/gi, '_')
   doc.save(`${safeName}.pdf`)
 }
-
 
 // function downloadSeparatePDFs() {
 //   const recipes = recipeStore.likedRecipes

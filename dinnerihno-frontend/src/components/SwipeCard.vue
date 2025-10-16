@@ -3,7 +3,7 @@
     <span class="arrow left">⬅</span>
     <span class="arrow right">➡</span>
   </div>
-  <h4 class="title-text">Totalt antal recept: {{ totalAmountOfrecipes }}</h4>
+  <h4 class="title-text">Totalt antal recept i databasen: {{ totalAmountOfrecipes }}</h4>
   <div
     class="swipe-card"
     v-if="currentRecipe"
@@ -75,6 +75,8 @@
         <li>Swipea höger för att skippa.</li>
         <li>Om du redan har en ingrediens hemma, så kan du klicka bort den direkt innan du swipear, då kommer den vara överstruken direkt
         när du kommer till handlingslistan!</li>
+        <li>I handlingslistan så kan du ladda hem receptets beskrivning samt ingredienser till en pdf-fil</li>
+        <li>Ingredienserna som blir överstrukna i swipe-delen, kommer inte komma med i pdf-filen</li>
         <li>Recepten kommer slumpmässigt.</li>
       </ul>
     </Dialog>
