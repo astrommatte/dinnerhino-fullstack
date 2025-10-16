@@ -17,9 +17,12 @@ export const useShoppingListStore = defineStore('shoppingList', () => {
     overriddenItems.value = items
   }
 
-  const isMarkedAsAtHome = (ingredientName) => {
-    return overriddenItems.value.some(item => item.name === ingredientName && item.isAlreadyAtHome)
-  }
+const isMarkedAsAtHome = (ingredientName) => {
+  const nameLower = ingredientName.toLowerCase()
+  return overriddenItems.value.some(
+    item => item.name.toLowerCase() === nameLower && item.isAlreadyAtHome
+  )
+}
 
   // Spara overriddenItems i localStorage varje gång den ändras
   watch(overriddenItems, (newVal) => {
