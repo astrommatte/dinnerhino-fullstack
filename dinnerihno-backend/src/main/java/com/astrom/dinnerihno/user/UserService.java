@@ -101,7 +101,7 @@ public class UserService {
 
     //Till "mina sidor" för användaren som är inloggad.
     public UserDTO getUser(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return dtoMapper.toUserDto(user);
@@ -127,31 +127,10 @@ public class UserService {
         return dtoMapper.toUserDto(saved);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName(); // Användarnamn är username i ditt fall
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Logged-in user not found"));
     }
 }

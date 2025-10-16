@@ -25,7 +25,7 @@ public class RecipeService {
 
     public RecipeDTO createRecipe(RecipeCreateDTO dto, String username) {
         // hämta användaren från DB baserat på inloggad email
-        User createdBy = userRepository.findByUsername(username)
+        User createdBy = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 
         // konvertera till entity
@@ -45,7 +45,7 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> getUserRecipes(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return recipeRepository.findByCreatedBy(user).stream()

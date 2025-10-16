@@ -27,7 +27,7 @@ public class AuthController {
 
         String username = authentication.getName();  // Basic Auth username
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserDTO userDto = new UserDTO();
