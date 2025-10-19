@@ -32,28 +32,33 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('currentUser')
   }
 
-  const login = async (values) => {
-  try {
-    const authHeader = 'Basic ' + btoa(`${values.username}:${values.password}`)
-
-    const meRes = await axios.get(`${apiUrl}/api/auth/me`, {
-      headers: { Authorization: authHeader }
-    })
-
-    user.value = meRes.data
-
-    // Om vi kommer hit = OK, spara auth och navigera
-    localStorage.setItem('auth', authHeader)
-    localStorage.setItem('currentUser', JSON.stringify(meRes.data))
-
-    window.dispatchEvent(new CustomEvent('auth-change', { detail: meRes.data }))
-    showSuccessToast('Du är nu inloggad!')
-    router.push('/recipes')  // Navigera först efter lyckad login
-
-  } catch (err) {
-    showErrorToast('Inloggning misslyckad')
+  const encodeBase64Utf8 = (str) => {
+    const bytes = new TextEncoder().encode(str)   // konverterar till UTF-8 bytes
+    let binary = ''
+    bytes.forEach((b) => binary += String.fromCharCode(b))
+    return btoa(binary)
   }
-}
+  
+  const login = async (values) => {
+    try {
+      const authHeader = 'Basic ' + encodeBase64Utf8(`${values.username}:${values.password}`)
+  
+      const meRes = await axios.get(`${apiUrl}/api/auth/me`, {
+        headers: { Authorization: authHeader }
+      })
+  
+      user.value = meRes.data
+  
+      localStorage.setItem('auth', authHeader)
+      localStorage.setItem('currentUser', JSON.stringify(meRes.data))
+  
+      window.dispatchEvent(new CustomEvent('auth-change', { detail: meRes.data }))
+      showSuccessToast('Du är nu inloggad!')
+      router.push('/recipes')
+    } catch (err) {
+      showErrorToast('Inloggning misslyckad')
+    }
+  }
 
   return {
     auth,
