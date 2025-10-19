@@ -43,7 +43,7 @@
         <!-- Ingredienser -->
         <ul>
           <li v-for="(ing, i) in selectedRecipe.ingredients" :key="i">
-            {{ ing.quantity }} {{ ing.unit }} {{ ing.name }}
+            {{ ing.name }} - {{ ing.quantity }}
           </li>
         </ul>
 
