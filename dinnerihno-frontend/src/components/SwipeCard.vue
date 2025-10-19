@@ -228,15 +228,17 @@ const openInfoModal = (() => {
 </script>
 
 <style scoped>
+
 .swipe-card {
-  max-width: 500px;
-  margin: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: var(--surface-card);
-  color: var(--text-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease;
+  touch-action: pan-y;
 }
 
 .recipe-thumbnail {
