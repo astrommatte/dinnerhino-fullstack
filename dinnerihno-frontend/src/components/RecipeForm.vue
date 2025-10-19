@@ -50,13 +50,15 @@
 
         <FileUpload
           mode="basic"
-          name="file"
-          choose-label="Välj bild"
-          :auto="false"
-          :custom-upload="true"
+          name="image"
           accept="image/*"
+          customUpload
+          chooseLabel="Välj bild"
           @select="onImageSelect"
         />
+        <small v-if="selectedFile" class="text-gray-500">
+          Vald fil: {{ selectedFile.name }}
+        </small>
 
         <div v-if="recipe.image?.url" class="recipe-image-container">
           <img :src="recipe.image.url" alt="Receptbild" class="image-preview" />
@@ -138,8 +140,22 @@ const removeIngredient = (index) => {
 
 function onImageSelect(event) {
   const file = event.files?.[0];
-  if (file) {
-    selectedFile.value = file;
+  if (!file) return
+
+    // 🔍 1. Kolla filstorlek (max 2 MB)
+    const maxSize = 2 * 1024 * 1024 // 2 MB
+  if (file.size > maxSize) {
+    showErrorToast(`Filen "${file.name}" är för stor! Maxgräns är 2 MB.`)
+    selectedFile.value = null
+    return
+  }
+
+  // 🔍 2. Kolla filtyp (tillåt bara bilder)
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    showErrorToast('Endast JPG, PNG eller WEBP tillåts.')
+    selectedFile.value = null
+    return
   }
 }
 
