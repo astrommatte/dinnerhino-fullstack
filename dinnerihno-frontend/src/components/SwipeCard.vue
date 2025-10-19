@@ -53,7 +53,7 @@
           :style="{ textDecoration: ingredient.isAlreadyAtHome ? 'line-through' : 'none' }"
           @click="toggleAtHome(ingredient)"
         >
-          {{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name }}
+          {{ ingredient.name }} - {{ ingredient.quantity }}
         </li>
       </ul>
       <div class="swipe-buttons">
@@ -153,19 +153,7 @@ const endSwipe = (e) => {
     
   }
 
-  // återställ mjukt till mitten
   resetPosition()
-}
-
-const animateSwipeOut = (direction) => {
-  isAnimating.value = true
-  translateX.value = direction * window.innerWidth
-  rotation.value = direction * 30
-  setTimeout(() => {
-    translateX.value = 0
-    rotation.value = 0
-    isAnimating.value = false
-  }, 300)
 }
 
 const resetPosition = () => {
@@ -175,13 +163,11 @@ const resetPosition = () => {
   setTimeout(() => (isAnimating.value = false), 200)
 }
 
-// Starta om swipen från början
 const reset = () => {
   showInfoToast('Börjar om och nollställer listan!')
   recipeStore.reset()
 }
 
-// Skicka gillade recept till inköpslista (exempel)
 const submit = async () => {
   const liked = recipeStore.likedRecipes
   if (liked.length === 0) {
