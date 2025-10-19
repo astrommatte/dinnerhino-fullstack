@@ -8,7 +8,7 @@
   <div
     class="swipe-card"
     v-if="currentRecipe"
-    :style="{ transform: `translateX(${translateX}px) rotate(${rotation}deg)` }"
+    :style="{ transform: `translateX(${translateX}px)` }"
     @touchstart="startSwipe"
     @touchmove="moveSwipe"
     @touchend="endSwipe"
@@ -57,8 +57,8 @@
         </li>
       </ul>
       <div class="swipe-buttons">
-        <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe(), showSuccessToast('Recept inlagt i handlingslista!')" />
         <Button icon="pi pi-thumbs-down" @click="recipeStore.skipCurrentRecipe(), showSuccessToast('Hoppar över recept!')" />
+        <Button icon="pi pi-thumbs-up" @click="recipeStore.likeCurrentRecipe(), showSuccessToast('Recept inlagt i handlingslista!')" />
       </div>
     </div>
     <Popover v-if="infoModal"/>
@@ -136,28 +136,25 @@ const moveSwipe = (e) => {
   if (isAnimating.value) return
   const currentX = e.touches[0].clientX
   const diff = currentX - startX
-  translateX.value = diff
-  rotation.value = diff / 20 // liten tilt
+  // ge lite rörelse, men dämpad
+  translateX.value = diff * 0.4
 }
 
 const endSwipe = (e) => {
   const diff = e.changedTouches[0].clientX - startX
 
   if (diff > 100) {
-    // Swipa höger
+    
     showSuccessToast('Recept inlagt i handlingslista!')
-    animateSwipeOut(-1)
     recipeStore.likeCurrentRecipe()
   } else if (diff < -100) {
-    // Swipa vänster
     showSuccessToast('Hoppar över recept!')
-    animateSwipeOut(1)
     recipeStore.skipCurrentRecipe()
-
-  } else {
-    // Återställ om draget var för litet
-    resetPosition()
+    
   }
+
+  // återställ mjukt till mitten
+  resetPosition()
 }
 
 const animateSwipeOut = (direction) => {
@@ -309,10 +306,4 @@ const openInfoModal = (() => {
     display: none;
   }
 }
-
-/* @media (max-width: 900px) {
-  .swipe-buttons {
-    display: none;
-  }
-} */
 </style>
