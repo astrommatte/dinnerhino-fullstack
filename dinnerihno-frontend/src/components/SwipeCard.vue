@@ -1,12 +1,14 @@
 <template>
   <div class="swipe-hint">
     <span class="arrow left">⬅</span>
+    <Button icon="pi pi-question-circle" @click="openInfoModal()"/>
     <span class="arrow right">➡</span>
   </div>
   <h4 class="title-text">Totalt antal recept i databasen: {{ totalAmountOfrecipes }}</h4>
   <div
     class="swipe-card"
     v-if="currentRecipe"
+    :style="{ transform: `translateX(${translateX}px) rotate(${rotation}deg)` }"
     @touchstart="startSwipe"
     @touchmove="moveSwipe"
     @touchend="endSwipe"
@@ -66,18 +68,20 @@
   
   <div class="reset-and-submit-buttons">
     <Button icon="pi pi-refresh" label="Avbryt" severity="warning" @click="reset" />
-    <Button icon="pi pi-question-circle" @click="openInfoModal()"/>
     <Button icon="pi pi-check" label="Klar" severity="success" @click="submit" />
 
     <Dialog header="Instruktioner och info" v-model:visible="infoModal" modal closeOnEscape>
       <ul>
-        <li>Swipea vänster för att lägga till.</li>
-        <li>Swipea höger för att skippa.</li>
+        <li>Swipea höger för att lägga till.</li>
+        <li>Swipea vänster för att skippa.</li>
+        <li>Det funkar även att trycka på tumme upp/ner</li>
         <li>Om du redan har en ingrediens hemma, så kan du klicka bort den direkt innan du swipear, då kommer den vara överstruken direkt
         när du kommer till handlingslistan!</li>
         <li>I handlingslistan så kan du ladda hem receptets beskrivning samt ingredienser till en pdf-fil</li>
         <li>Ingredienserna som blir överstrukna i swipe-delen, kommer inte komma med i pdf-filen</li>
         <li>Recepten kommer slumpmässigt.</li>
+        <li>Tryck klar när du känner dig redo att gå till nästa steg.</li>
+        <li>Tryck på avbryt om du vill börja om.</li>
       </ul>
     </Dialog>
   </div>
@@ -103,6 +107,9 @@ const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.curre
 const infoModal = ref(false)
 const imageDialogVisible = ref(false)
 const dialogImageUrl = ref(null)
+const translateX = ref(0)
+const rotation = ref(0)
+const isAnimating = ref(false)
 
 const openImageDialog = (url) => {
   dialogImageUrl.value = url
@@ -121,24 +128,54 @@ const toggleAtHome = (ingredient) => {
 let startX = 0
 
 const startSwipe = (e) => {
+  if (isAnimating.value) return
   startX = e.touches[0].clientX
 }
 
-const endSwipe = (e) => {
-  const endX = e.changedTouches[0].clientX
-  const diff = endX - startX
+const moveSwipe = (e) => {
+  if (isAnimating.value) return
+  const currentX = e.touches[0].clientX
+  const diff = currentX - startX
+  translateX.value = diff
+  rotation.value = diff / 20 // liten tilt
+}
 
-  if (diff > 50) {
-    showSuccessToast('Hoppar över recept!')
-    recipeStore.skipCurrentRecipe()
-  } else if (diff < -50) {
+const endSwipe = (e) => {
+  const diff = e.changedTouches[0].clientX - startX
+
+  if (diff > 100) {
+    // Swipa höger
     showSuccessToast('Recept inlagt i handlingslista!')
+    animateSwipeOut(-1)
     recipeStore.likeCurrentRecipe()
+  } else if (diff < -100) {
+    // Swipa vänster
+    showSuccessToast('Hoppar över recept!')
+    animateSwipeOut(1)
+    recipeStore.skipCurrentRecipe()
+
+  } else {
+    // Återställ om draget var för litet
+    resetPosition()
   }
 }
 
-const moveSwipe = (e) => {
-  // valfritt: preview swipe-riktning
+const animateSwipeOut = (direction) => {
+  isAnimating.value = true
+  translateX.value = direction * window.innerWidth
+  rotation.value = direction * 30
+  setTimeout(() => {
+    translateX.value = 0
+    rotation.value = 0
+    isAnimating.value = false
+  }, 300)
+}
+
+const resetPosition = () => {
+  isAnimating.value = true
+  translateX.value = 0
+  rotation.value = 0
+  setTimeout(() => (isAnimating.value = false), 200)
 }
 
 // Starta om swipen från början
@@ -271,9 +308,9 @@ const openInfoModal = (() => {
   }
 }
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
   .swipe-buttons {
     display: none;
   }
-}
+} */
 </style>
