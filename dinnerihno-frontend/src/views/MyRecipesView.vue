@@ -26,8 +26,8 @@
     </ul>
 
 
-    <Popover ref="op">
-      <div v-if="selectedRecipe">
+    <Popover ref="op" dismissable>
+      <div v-if="selectedRecipe" class="popover-content">
         <h3>{{ selectedRecipe.name }}</h3>
         <p class="recipe-description">{{ selectedRecipe.description }}</p>
 
@@ -175,6 +175,14 @@ const onImageDeleted = (recipeId) => {
 </script>
 
 <style scoped>
+
+  .popover-content {
+    max-width: 300px; /* Justera efter behov */
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
   .recipe-description {
     white-space: pre-wrap; /* 👈 gör så att radbrytningar och flera mellanslag bevaras */
     word-break: break-word; /* 👈 förhindrar overflow om ord är långa */

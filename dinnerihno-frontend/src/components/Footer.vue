@@ -18,7 +18,7 @@ const props = defineProps({
   },
   githubUrl: {
     type: String,
-    default: 'https://github.com/ditt-anvandarnamn'
+    default: 'https://github.com/astrommatte'
   }
 })
 </script>

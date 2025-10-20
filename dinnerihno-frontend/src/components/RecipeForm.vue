@@ -56,9 +56,6 @@
           chooseLabel="Välj bild"
           @select="onImageSelect"
         />
-        <small v-if="selectedFile" class="text-gray-500">
-          Vald fil: {{ selectedFile.name }}
-        </small>
 
         <div v-if="recipe.image?.url" class="recipe-image-container">
           <img :src="recipe.image.url" alt="Receptbild" class="image-preview" />
