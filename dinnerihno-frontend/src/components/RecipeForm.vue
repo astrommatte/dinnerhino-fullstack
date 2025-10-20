@@ -139,7 +139,6 @@ const removeIngredient = (index) => {
 }
 
 function onImageSelect(event) {
-  console.log("onimageselect")
   const file = event.files?.[0];
   if (file) {
     selectedFile.value = file;
