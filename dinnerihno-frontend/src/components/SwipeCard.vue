@@ -137,7 +137,7 @@ const moveSwipe = (e) => {
   const currentX = e.touches[0].clientX
   const diff = currentX - startX
   // ge lite rörelse, men dämpad
-  translateX.value = diff * 0.4
+  translateX.value = diff * 0.6
 }
 
 const endSwipe = (e) => {
