@@ -139,8 +139,11 @@ const removeIngredient = (index) => {
 }
 
 function onImageSelect(event) {
+  console.log("onimageselect")
   const file = event.files?.[0];
-  if (!file) return
+  if (file) {
+    selectedFile.value = file;
+  }
 
     // 🔍 1. Kolla filstorlek (max 2 MB)
     const maxSize = 2 * 1024 * 1024 // 2 MB
