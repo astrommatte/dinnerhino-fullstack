@@ -1,7 +1,7 @@
 <template>
   <div class="swipe-hint">
     <span class="arrow left">⬅</span>
-    <Button icon="pi pi-question-circle" @click="openInfoModal()"/>
+    <Button icon="pi pi-question-circle" label="Hur gör man?" @click="openInfoModal()"/>
     <span class="arrow right">➡</span>
   </div>
   <h4 class="title-text">Totalt antal recept i databasen: {{ totalAmountOfrecipes }}</h4>
@@ -40,9 +40,6 @@
         />
       </Dialog>
 
-
-
-      <p>{{ currentRecipe.description }}</p>
       <p><strong>Portioner:</strong> {{ currentRecipe.servings }}</p>
 
       <h4>Ingredienser:</h4>
@@ -82,6 +79,7 @@
         <li>Recepten kommer slumpmässigt.</li>
         <li>Tryck klar när du känner dig redo att gå till nästa steg.</li>
         <li>Tryck på avbryt om du vill börja om.</li>
+        <li>Om ni laddar hem receptet som pdf(i handlingslistan) så kommer beskrivningen med där!</li>
       </ul>
     </Dialog>
   </div>
@@ -284,12 +282,5 @@ const openInfoModal = (() => {
   0% { transform: translateX(0); }
   50% { transform: translateX(8px); }
   100% { transform: translateX(0); }
-}
-
-@media (min-width: 900px) {
-  /* Dölj pilarna på större skärmar om swipe-knappar används */
-  .swipe-hint {
-    display: none;
-  }
 }
 </style>
