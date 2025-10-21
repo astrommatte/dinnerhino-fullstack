@@ -11,21 +11,28 @@
     @save="saveEdit"
     @cancel="cancelEdit"
   />
+
+  <RecipeListTable
+  />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import UserListTable from '@/components/UserListTable.vue'
 import UserForm from '@/components/UserForm.vue'
+import RecipeListTable from '@/components/RecipeListTable.vue'
 import { useUserListStore } from '@/stores/useUserStore'
-import { useToaster } from '@/stores/useToastStore'
 import { useConfirmationStore } from '@/stores/useConfirmationStore'
+import { useRecipeStore } from '../stores/useRecipeStore'
+import { useToaster } from '@/stores/useToastStore'
 
 const { showSuccessToast, showErrorToast } = useToaster()
 const confirmationStore = useConfirmationStore()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const userStore = useUserListStore()
+const recipeStore = useRecipeStore()
+const hasRecipes = computed(() => recipeStore.recipes.length > 0)
 
 const editDialogVisible = ref(false)
 const editUser = ref({})
@@ -94,7 +101,28 @@ async function fetchUsers() {
   }
 }
 
+
+
+
+
+
+const fetchRecipes = async () => {
+
+  try {
+    const res = await axios.get(`${apiUrl}/api/recipes`, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+    showSuccessToast('Alla recept hämtade')
+    recipeStore.setRecipes(res.data)
+  } catch (err) {
+    showErrorToast('Kunde inte hämta recept')
+  } finally {
+
+  }
+}
+
 onMounted(() => {
   fetchUsers()
+  fetchRecipes()
 })
 </script>
