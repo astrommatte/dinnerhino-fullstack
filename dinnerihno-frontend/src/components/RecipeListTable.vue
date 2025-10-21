@@ -9,8 +9,9 @@
                 <div>{{ recipe.name }}</div>
                 <small>
                     <h5>
-                        Skriven av: {{ recipe.createdByUsername || 'Okänd' }}<br>
+                        Skriven av: {{ recipe.createdByUsername || 'Okänd' }} ({{ recipe.createdByFullname || 'Okänd' }})<br>
                     </h5>
+
                     <h5>
                         Användar Id: {{ recipe.createdById || 'Okänd' }}<br>
                     </h5>
@@ -29,13 +30,12 @@
             {{ ingredient.name }} - {{ ingredient.quantity }}
             </li>
         </ul>
-
         </AccordionTab>
     </Accordion>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRecipeStore } from '@/stores/useRecipeStore'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'

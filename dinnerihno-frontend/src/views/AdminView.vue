@@ -32,7 +32,6 @@ const confirmationStore = useConfirmationStore()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 const userStore = useUserListStore()
 const recipeStore = useRecipeStore()
-const hasRecipes = computed(() => recipeStore.recipes.length > 0)
 
 const editDialogVisible = ref(false)
 const editUser = ref({})
