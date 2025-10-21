@@ -22,6 +22,7 @@ public class RecipeDTO {
     private int servings;
     private Long createdById;
     private String createdByUsername;
+    private String createdByFullname;
     private List<IngredientDTO> ingredients = new ArrayList<>();
     private ImageDTO image;
 }

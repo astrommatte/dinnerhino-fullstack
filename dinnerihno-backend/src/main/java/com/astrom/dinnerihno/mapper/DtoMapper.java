@@ -65,6 +65,7 @@ public class DtoMapper {
         dto.setServings(recipe.getServings());
         dto.setCreatedById(recipe.getCreatedBy().getId());
         dto.setCreatedByUsername(recipe.getCreatedBy().getUsername());
+        dto.setCreatedByFullname(recipe.getCreatedBy().getFirstName() + " " + recipe.getCreatedBy().getLastName());
 
         dto.setIngredients(recipe.getIngredients().stream()
                 .map(this::toIngredientDto)
