@@ -59,8 +59,6 @@
       </div>
     </div>
     <Popover v-if="infoModal"/>
-
-    <h4>Recept skapad av: {{ recipeOwnerUsername }}</h4>
   </div>
   
   <div class="reset-and-submit-buttons">
@@ -79,7 +77,6 @@
         <li>Recepten kommer slumpmässigt.</li>
         <li>Tryck klar när du känner dig redo att gå till nästa steg.</li>
         <li>Tryck på avbryt om du vill börja om.</li>
-        <li>Om ni laddar hem receptet som pdf(i handlingslistan) så kommer beskrivningen med där!</li>
       </ul>
     </Dialog>
   </div>
@@ -101,7 +98,7 @@ const recipeStore = useRecipeStore()
 const shoppingListStore = useShoppingListStore()
 const currentRecipe = computed(() => recipeStore.recipes[recipeStore.currentIndex])
 const totalAmountOfrecipes = computed(() => recipeStore.recipes.length)
-const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByUsername)
+//const recipeOwnerUsername = computed(() => recipeStore.recipes[recipeStore.currentIndex].createdByUsername)
 const infoModal = ref(false)
 const imageDialogVisible = ref(false)
 const dialogImageUrl = ref(null)
