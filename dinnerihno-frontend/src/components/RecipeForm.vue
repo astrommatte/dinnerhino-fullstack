@@ -186,6 +186,9 @@ const submitRecipe = async () => {
 
     if (props.existingRecipe && props.existingRecipe.id) {
       // Uppdatera
+      // Ta bort ingredienser utan namn
+      recipe.value.ingredients = recipe.value.ingredients.filter(i => i.name.trim() !== '')
+
       const res = await axios.put(
         `${apiUrl}/api/recipes/${props.existingRecipe.id}`,
         recipe.value,
@@ -195,6 +198,9 @@ const submitRecipe = async () => {
       
     } else {
       // Skapa nytt
+      // Ta bort ingredienser utan namn
+      recipe.value.ingredients = recipe.value.ingredients.filter(i => i.name.trim() !== '')
+
       const res = await axios.post(
         `${apiUrl}/api/recipes`,
         recipe.value,
