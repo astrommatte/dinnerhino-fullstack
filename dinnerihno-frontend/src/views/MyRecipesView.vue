@@ -13,7 +13,7 @@
     <RecipeForm
       v-if="showCreateForm"
       :existingRecipe="recipeToEdit"
-      :allRecipes="recipes"
+      :allRecipes="allRecipes"
       @saved="onRecipeSaved"
       @imageDeleted="onImageDeleted"
     />
@@ -73,6 +73,7 @@ const confirmationStore = useConfirmationStore()
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 const recipes = ref([])
+const allRecipes = ref([])
 const selectedRecipe = ref(null)
 const showCreateForm = ref(false)
 const recipeToEdit = ref(null)
@@ -84,7 +85,7 @@ const toggleForm = () => {
   showCreateForm.value = !showCreateForm.value
 }
 
-const fetchRecipes = async () => {
+const fetchMyRecipes = async () => {
   showLoading()
   try {
     const res = await axios.get(`${apiUrl}/api/recipes/my`, {
@@ -96,11 +97,24 @@ const fetchRecipes = async () => {
   } finally {
     hideLoading()
   }
+}
 
+const fetchAllRecipes = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/api/recipes`, {
+      headers: { Authorization: localStorage.getItem('auth') }
+    })
+  allRecipes.value = res.data
+  }catch(err) {
+
+  } finally {
+
+  }
 }
 
 onMounted(()=> {
-  fetchRecipes()
+  fetchMyRecipes()
+  fetchAllRecipes()
 })
 
 async function showIngredients(event, recipe) {
@@ -143,7 +157,7 @@ async function editRecipe(recipe) {
 const onRecipeSaved = () => {
   showCreateForm.value = false
   recipeToEdit.value = null
-  fetchRecipes()
+  fetchMyRecipes()
 }
 
 const onImageDeleted = (recipeId) => {
