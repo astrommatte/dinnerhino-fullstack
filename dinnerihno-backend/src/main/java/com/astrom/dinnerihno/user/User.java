@@ -2,10 +2,13 @@ package com.astrom.dinnerihno.user;
 
 import com.astrom.dinnerihno.recipe.Recipe;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +24,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @NotBlank
     private String firstName;
+
+    @NotNull
+    @NotBlank
     private String lastName;
 
+    @NotNull
+    @NotBlank
     @Column(unique = true)
     private String username;
 
+    @NotNull
+    @NotBlank
     private String password;
 
     @Column(name = "is_active")
