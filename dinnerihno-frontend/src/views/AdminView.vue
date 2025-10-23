@@ -100,11 +100,6 @@ async function fetchUsers() {
   }
 }
 
-
-
-
-
-
 const fetchRecipes = async () => {
 
   try {

@@ -13,6 +13,7 @@
     <RecipeForm
       v-if="showCreateForm"
       :existingRecipe="recipeToEdit"
+      :allRecipes="recipes"
       @saved="onRecipeSaved"
       @imageDeleted="onImageDeleted"
     />
