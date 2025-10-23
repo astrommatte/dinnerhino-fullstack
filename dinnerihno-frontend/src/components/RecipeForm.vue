@@ -80,18 +80,21 @@ import { useToaster } from '@/stores/useToastStore'
 import { hideLoading, showLoading } from '@/stores/useLoadingStore'
 import FloatLabel from 'primevue/floatlabel'
 import { useConfirmationStore } from '@/stores/useConfirmationStore'
+import { useRecipeStore } from '@/stores/useRecipeStore'
 import FileUpload from 'primevue/fileupload';
 
 const confirmationStore = useConfirmationStore()
 const { showSuccessToast, showErrorToast, showInfoToast } = useToaster()
 const showIngredientForm = ref(false)
 const selectedFile = ref(null);
+const recipeStore = useRecipeStore()
 
 const props = defineProps({
   existingRecipe: {
     type: Object,
     default: null
-  }
+  },
+  allRecipes: Array
 })
 
 const resetForm = () => {
@@ -178,6 +181,13 @@ async function removeImage () {
 }
 
 const submitRecipe = async () => {
+  // Kolla om receptnamnet redan finns
+  const exists = props.allRecipes.some(r => r.name.trim().toLowerCase() === recipe.value.name.trim().toLowerCase());
+
+  if (exists) {
+    showErrorToast('Det finns redan ett recept med det namnet!');
+    return; // Avbryt hela funktionen här
+  }
   try {
     showLoading();
     showInfoToast('Laddar upp nytt recept..');

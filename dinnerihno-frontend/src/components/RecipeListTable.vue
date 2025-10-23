@@ -4,38 +4,38 @@
         v-for="recipe in sortedRecipeList"
         :key="recipe.id"
         >
-        <template #header>
-            <div>
-                <div>{{ recipe.name }}</div>
-                <small>
-                    <h5>
-                        Skriven av: {{ recipe.createdByUsername || 'Okänd' }} ({{ recipe.createdByFullname || 'Okänd' }})<br>
-                    </h5>
+            <template #header>
+                <div>
+                    <div>{{ recipe.name }}</div>
+                    <small>
+                        <h5>
+                            Skriven av: {{ recipe.createdByUsername || 'Okänd' }} ({{ recipe.createdByFullname || 'Okänd' }})<br>
+                        </h5>
 
-                    <h5>
-                        Användar Id: {{ recipe.createdById || 'Okänd' }}<br>
-                    </h5>
-                </small>
-            </div>
-        </template>
+                        <h5>
+                            Användar Id: {{ recipe.createdById || 'Okänd' }}<br>
+                        </h5>
+                    </small>
+                </div>
+            </template>
 
-        <!-- Innehåll -->
-        <p class="mt-2">{{ recipe.description }}</p>
-              <h4>Ingredienser:</h4>
-        <ul>
-            <li
-            v-for="(ingredient, index) in recipe.ingredients"
-            :key="index"
-            >
-            {{ ingredient.name }} - {{ ingredient.quantity }}
-            </li>
-        </ul>
+            <!-- Innehåll -->
+            <p class="mt-2">{{ recipe.description }}</p>
+                <h4>Ingredienser:</h4>
+            <ul>
+                <li
+                v-for="(ingredient, index) in recipe.ingredients"
+                :key="index"
+                >
+                {{ ingredient.name }} - {{ ingredient.quantity }}
+                </li>
+            </ul>
         </AccordionTab>
     </Accordion>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRecipeStore } from '@/stores/useRecipeStore'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'

@@ -94,6 +94,15 @@ const resetFields = () => {
 
 const handleSubmit = async () => {
   if (isRegistering.value) {
+    if (
+      !firstName.value.trim() ||
+      !lastName.value.trim() ||
+      !username.value.trim() ||
+      !password.value.trim()
+    ) {
+      showErrorToast('Alla fält måste fyllas i!')
+      return
+    }
     try {
       showLoading()
       await axios.post(`${apiUrl}/api/users/create`, {
