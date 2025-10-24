@@ -70,13 +70,10 @@
         <li>Swipea höger för att lägga till.</li>
         <li>Swipea vänster för att skippa.</li>
         <li>Det funkar även att trycka på tumme upp/ner</li>
-        <li>Om du redan har en ingrediens hemma, så kan du klicka bort den direkt innan du swipear, då kommer den vara överstruken direkt
-        när du kommer till handlingslistan!</li>
-        <li>I handlingslistan så kan du ladda hem receptets beskrivning samt ingredienser till en pdf-fil</li>
-        <li>Ingredienserna som blir överstrukna i swipe-delen, kommer inte komma med i pdf-filen</li>
-        <li>Recepten kommer slumpmässigt.</li>
-        <li>Tryck klar när du känner dig redo att gå till nästa steg.</li>
-        <li>Tryck på avbryt om du vill börja om.</li>
+        <li>Tryck klar när du känner dig redo att gå till handlingslistan. Kommer du inte dit automatiskt, så kan du
+          bara klicka i menyn.
+        </li>
+        <li>Tryck på avbryt om du rensa det du har valt och vill börja om.</li>
       </ul>
     </Dialog>
   </div>

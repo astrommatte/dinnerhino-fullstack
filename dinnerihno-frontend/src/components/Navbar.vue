@@ -16,8 +16,10 @@
         <RouterLink to="/recipes">Swipea Recept</RouterLink>
         <RouterLink to="/shoppinglist">Handlingslista</RouterLink>
         <RouterLink to="/admin" v-if="isAdmin">Admin</RouterLink>
+        <Button icon="pi pi-question-circle" severity="secondary" @click="openInfoModal" />
         <Button icon="pi pi-sign-out" label="Logga ut" @click="handleLogout" />
       </nav>
+      
     </div>
 
     <!-- PrimeVue Drawer för mobilmeny -->
@@ -29,13 +31,30 @@
         <RouterLink to="/recipes" @click="isMenuVisible = false">Swipea Recept</RouterLink>
         <RouterLink to="/shoppinglist" @click="isMenuVisible = false">Handlingslista</RouterLink>
         <RouterLink to="/admin" v-if="isAdmin" @click="isMenuVisible = false">Admin</RouterLink>
+        <Button icon="pi pi-question-circle" severity="secondary" @click="openInfoModal" />
         <Button icon="pi pi-sign-out" label="Logga ut" @click="handleLogout" />
       </div>
     </Drawer>
+    
   </header>
+      <Dialog header="Information om appen" v-model:visible="infoModal" modal closeOnEscape>
+      <ul>
+        <li>Denna app ska vara till hjälp om man har svårt att komma på vad man ska äta!</li>
+        <li>Man kan skapa sina egna recept i "Mina recept", när du gjort det så kommer 
+          receptet dyka upp för andra i "swipe-delen"
+        </li>
+        <li>Man swipear helt enkelt på recept som dyker upp(i swipe-delen), sen följer ingredienserna med till en handlingslista</li>
+        <li>Innan man swipear ett recept så kan man "trycka bort" en eller flera ingredienser</li>
+        <li>Tex: ett recept dyker upp, Köttfärssås, du har redan lök så du stryker över det direkt,
+          då kommer ingrediensen lök vara överstruken direkt i handlingslistan när du väl kommer dit</li>
+        <li>I handlingslistan så kan du ladda hem receptets beskrivning samt ingredienser till en pdf-fil</li>
+        <li>En beskrivning av ett recept är helt enkelt en utförlig text där man förklarar hur man tillagar maten.
+          (Om man vill göra det dvs, absolut inget måste!)
+        </li>
+        <li>Ingredienserna som blir överstrukna i swipe-delen, kommer inte komma med i pdf-filen</li>
+      </ul>
+    </Dialog>
 </template>
-
-
 
 <script setup>
   import { ref } from 'vue';
@@ -49,11 +68,17 @@
   const router = useRouter()
   const isAdmin = computed(() => authStore.user?.role === 'ADMIN')
   const isMenuVisible = ref(false)
+  const infoModal = ref(false)
 
   const handleLogout = () => {
     authStore.logout()
     router.push('/login')
   }
+
+  const openInfoModal = (() => {
+    infoModal.value = true
+    isMenuVisible.value = false
+  })
 </script>
 
 <style scoped>
