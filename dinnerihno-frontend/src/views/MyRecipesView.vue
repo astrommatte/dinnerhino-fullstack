@@ -190,6 +190,13 @@ const onImageDeleted = (recipeId) => {
 </script>
 
 <style scoped>
+  .card{
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 
   .popover-content {
     max-width: 300px; /* Justera efter behov */
@@ -203,7 +210,8 @@ const onImageDeleted = (recipeId) => {
     word-break: break-word; /* 👈 förhindrar overflow om ord är långa */
   }
   .cancel-create-buttons{
-    width: 100%;
+    width: 40%;
+
   }
 
   .popover-image {

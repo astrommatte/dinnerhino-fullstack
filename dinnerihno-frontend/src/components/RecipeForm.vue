@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
@@ -250,6 +250,7 @@ const submitRecipe = async () => {
 </script>
 
 <style scoped>
+
     .image-preview {
     max-width: 150px;
     max-height: 100px;
@@ -303,13 +304,19 @@ const submitRecipe = async () => {
     margin-bottom: 1rem;
   }
 
-  .p-inputgroup{
-    margin-bottom: 1rem;
-  }
+.p-inputgroup{
+  margin-bottom: 1rem;
+  width: 250px;
+  height: 100px;
+}
 
-  .p-inputgroup button{
-    width: 15px;
-    height: 10px;
-    margin: 5px;
-  }
+.p-fluid{
+  width: 250px;
+}
+
+.p-inputgroup button{
+  width: 15px;
+  height: 10px;
+  margin: 5px;
+}
 </style>

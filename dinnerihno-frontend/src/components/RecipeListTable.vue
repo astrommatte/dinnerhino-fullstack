@@ -24,10 +24,10 @@
                 <h4>Ingredienser:</h4>
             <ul>
                 <li
-                v-for="(ingredient, index) in recipe.ingredients"
-                :key="index"
-                >
-                {{ ingredient.name }} - {{ ingredient.quantity }}
+                    v-for="(ingredient, index) in recipe.ingredients"
+                    :key="index"
+                    >
+                    {{ ingredient.name }} - {{ ingredient.quantity }}
                 </li>
             </ul>
         </AccordionTab>
